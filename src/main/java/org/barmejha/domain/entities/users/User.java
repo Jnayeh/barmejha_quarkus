@@ -1,0 +1,43 @@
+package org.barmejha.domain.entities.users;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import org.barmejha.domain.entities.audit.AuditedEntity;
+import org.barmejha.domain.enums.UserType;
+
+@Entity
+@Table(name = "users")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
+public class User extends AuditedEntity {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  public Long id;
+
+  @Column(unique = true)
+  @Email
+  public String email;
+
+  @Column(nullable = false)
+  public String passwordHash;
+
+  @Column(name = "user_type", insertable = false, updatable = false)
+  @Enumerated(EnumType.STRING)
+  public UserType type;
+
+  // Common fields for all users
+  public String firstName;
+  public String lastName;
+}

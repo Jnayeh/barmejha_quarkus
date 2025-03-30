@@ -1,4 +1,4 @@
-package org.barmejha.resources;
+package org.barmejha.rest;
 
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;

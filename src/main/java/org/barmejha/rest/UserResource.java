@@ -1,4 +1,4 @@
-package org.barmejha.resources;
+package org.barmejha.rest;
 
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -49,10 +49,11 @@ public class UserResource {
   public User updateUser(@PathParam("id") Long id, User updatedUser) {
     User user = userRepository.findById(id);
     if (user != null) {
-      user.email = updatedUser.email;
-      user.passwordHash = updatedUser.passwordHash;
-      user.firstName = updatedUser.firstName;
-      user.lastName = updatedUser.lastName;
+      user.setEmail(updatedUser.getEmail());
+      user.setPasswordHash(updatedUser.getPasswordHash());
+      user.setFirstName(user.getFirstName());
+      user.setUserName(user.getUserName());
+      user.setLastName(user.getLastName());
     }
     return user;
   }

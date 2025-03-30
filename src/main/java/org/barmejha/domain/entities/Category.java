@@ -4,13 +4,12 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.barmejha.domain.entities.audit.AuditedEntity;
 import org.barmejha.domain.entities.media.MediaContent;
+import org.barmejha.domain.idgenerator.USID;
 
 import java.util.Set;
 
@@ -26,24 +26,25 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+@Valid
 @Entity
 @Table(name = "categories")
 public class Category extends AuditedEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  public Long id;
+  @USID
+  private Long id;
 
   @Column(unique = true, nullable = false)
-  public String name;
+  private String name;
 
   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
   @JoinColumn(name = "category_id", nullable = false)
-  public MediaContent media;
+  private MediaContent media;
 
   @Column(length = 7)
-  public String hexColor;
+  private String hexColor;
 
   @ManyToMany(mappedBy = "categories")
-  public Set<Activity> activities;
+  private Set<Activity> activities;
 }

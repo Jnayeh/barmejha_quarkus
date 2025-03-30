@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,32 +27,33 @@ import java.time.Instant;
 @AllArgsConstructor
 @Getter
 @Setter
+@Valid
 @Entity
 @Table(name = "payments")
 public class Payment extends PanacheEntityBase {
 
   @Id
   @ULID
-  public String id;
+  private String id;
 
   @OneToOne
   @JoinColumn(name = "plan_id")
-  public Plan plan;
+  private Plan plan;
 
   @Column(nullable = false)
-  public BigDecimal amount;
+  private BigDecimal amount;
 
-  public String currency;
+  private String currency;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
-  public PaymentStatus status;
+  private PaymentStatus status;
 
   @Column(unique = true)
-  public String transactionId;
+  private String transactionId;
 
   @Column(nullable = false)
-  public Instant processedAt;
+  private Instant processedAt;
 
 
   @PrePersist

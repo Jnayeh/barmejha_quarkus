@@ -5,14 +5,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +25,7 @@ import org.barmejha.domain.entities.users.User;
 import org.barmejha.domain.enums.PaymentType;
 import org.barmejha.domain.enums.PlanStatus;
 import org.barmejha.domain.enums.PlanType;
+import org.barmejha.domain.idgenerator.USID;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -36,46 +36,47 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+@Valid
 @Entity
 @Table(name = "plans")
 public class Plan extends AuditedEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  public Long id;
+  @USID
+  private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "schedule_id", nullable = false)
-  public Schedule schedule;
+  private Schedule schedule;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "client_id", nullable = false)
-  public Client client;
+  private Client client;
   @Column(nullable = false)
-  public LocalDateTime startTime;
+  private LocalDateTime startTime;
   @Column(nullable = false)
-  public LocalDateTime endTime;
+  private LocalDateTime endTime;
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
-  public PlanStatus status;
+  private PlanStatus status;
   @Column(nullable = false)
-  public BigDecimal finalPrice;
+  private BigDecimal finalPrice;
   @Enumerated(EnumType.STRING)
   @Builder.Default
-  public PlanType type = PlanType.PRIVATE;
+  private PlanType type = PlanType.PRIVATE;
   @Builder.Default
-  public PaymentType paymentType;
-  public String title;
+  private PaymentType paymentType = PaymentType.CREATOR;
+  private String title;
   @Column(length = 1000)
-  public String description;
+  private String description;
   @ManyToMany(fetch = FetchType.LAZY)
-  public Set<User> participants;
+  private Set<User> participants;
   @OneToMany(fetch = FetchType.LAZY)
-  public Set<Comment> comments;
+  private Set<Comment> comments;
   @Min(1)
   @Column(nullable = false)
   @Builder.Default
-  public int minParticipants = 1;
-  public int maxParticipants;
+  private int minParticipants = 1;
+  private int maxParticipants;
 
 }

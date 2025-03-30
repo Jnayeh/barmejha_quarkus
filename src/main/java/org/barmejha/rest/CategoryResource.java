@@ -1,4 +1,4 @@
-package org.barmejha.resources;
+package org.barmejha.rest;
 
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -49,8 +49,8 @@ public class CategoryResource {
   public Category updateCategory(@PathParam("id") Long id, Category updatedCategory) {
     Category category = categoryRepository.findById(id);
     if (category != null) {
-      category.name = updatedCategory.name;
-      category.hexColor = updatedCategory.hexColor;
+      category.setName(updatedCategory.getName());
+      category.setHexColor(updatedCategory.getHexColor());
     }
     return category;
   }

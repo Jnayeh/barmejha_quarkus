@@ -4,8 +4,6 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -14,67 +12,75 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.barmejha.domain.entities.audit.AuditedEntity;
 import org.barmejha.domain.entities.media.MediaContent;
 import org.barmejha.domain.entities.users.Provider;
+import org.barmejha.domain.idgenerator.USID;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
+@EqualsAndHashCode(callSuper = true)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@Entity(name = "activities")
+@Data
 @Valid
+@Entity(name = "activities")
 public class Activity extends AuditedEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  public Long id;
+  @USID
+  private Long id;
 
   @Column(nullable = false)
   @NotNull
-  public String name;
+  private String name;
 
   @Column(length = 1000)
-  public String description;
+  private String description;
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
   @JoinColumn(name = "activity_id")
-  public List<MediaContent> media;
+  private List<MediaContent> media;
 
   @Column(nullable = false)
   @NotNull
-  public Long duration;
+  private int duration;
 
   @Column(nullable = false)
   @NotNull
-  public BigDecimal basePrice;
+  private BigDecimal basePrice;
 
-  public BigDecimal discountPrice;
+  private BigDecimal discountPrice;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "provider_id")
-  public Provider provider;
+  private Provider provider;
 
   @ManyToMany
   @JoinTable(name = "activity_tags")
-  public Set<Tag> tags;
+  private Set<Tag> tags;
 
   @OneToMany(mappedBy = "activity")
-  public List<Schedule> schedules;
+  private List<Schedule> schedules;
 
   @OneToMany(mappedBy = "activity")
-  public List<Experience> experiences;
+  private List<Experience> experiences;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "location_id")
-  public Location location;
+  private Location location;
 
   @ManyToMany
   @JoinTable(name = "activity_categories")
-  public Set<Category> categories;
+  private Set<Category> categories;
 }

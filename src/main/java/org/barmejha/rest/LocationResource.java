@@ -1,4 +1,4 @@
-package org.barmejha.resources;
+package org.barmejha.rest;
 
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -49,10 +49,10 @@ public class LocationResource {
   public Location updateLocation(@PathParam("id") Long id, Location updatedLocation) {
     Location location = locationRepository.findById(id);
     if (location != null) {
-      location.name = updatedLocation.name;
-      location.address = updatedLocation.address;
-      location.latitude = updatedLocation.latitude;
-      location.longitude = updatedLocation.longitude;
+      location.setName(updatedLocation.getName());
+      location.setAddress(updatedLocation.getAddress());
+      location.setLatitude(updatedLocation.getLatitude());
+      location.setLongitude(updatedLocation.getLongitude());
     }
     return location;
   }

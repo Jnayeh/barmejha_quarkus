@@ -1,4 +1,4 @@
-package org.barmejha.resources;
+package org.barmejha.rest;
 
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -55,9 +55,9 @@ public class ExperienceResource {
   public Experience updatedExperience(@PathParam("id") Long id, Experience updatedExperience) {
     Experience experience = experienceRepository.findById(id);
     if (experience != null) {
-      experience.media = updatedExperience.media;
-      experience.rating = updatedExperience.rating;
-      experience.review = updatedExperience.review;
+      experience.setMedia(updatedExperience.getMedia());
+      experience.setRating(updatedExperience.getRating());
+      experience.setReview(updatedExperience.getReview());
     }
     return experience;
   }

@@ -12,16 +12,16 @@ import java.time.Instant;
 public abstract class AuditedEntity extends PanacheEntityBase {
 
   @Column(name = "created_at", nullable = false, updatable = false)
-  public Instant createdAt;
+  private Instant createdAt;
 
   @Column(name = "created_by", updatable = false)
-  public String createdBy;
+  private String createdBy;
 
   @Column(name = "updated_at")
-  public Instant updatedAt;
+  private Instant updatedAt;
 
   @Column(name = "updated_by")
-  public String updatedBy;
+  private String updatedBy;
 
   @PrePersist
   void onCreate() {

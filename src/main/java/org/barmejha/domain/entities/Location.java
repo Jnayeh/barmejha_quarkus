@@ -3,17 +3,17 @@ package org.barmejha.domain.entities;
 import jakarta.persistence.Cacheable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.barmejha.domain.entities.audit.AuditedEntity;
+import org.barmejha.domain.idgenerator.USID;
 
 import java.util.List;
 
@@ -22,27 +22,28 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
+@Valid
 @Entity
 @Table(name = "locations")
 @Cacheable
 public class Location extends AuditedEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  public Long id;
+  @USID
+  private Long id;
 
   @Column(nullable = false)
-  public String name;
+  private String name;
 
   @Column(nullable = false)
-  public String address;
+  private String address;
 
   @Column(nullable = false)
-  public Double latitude;
+  private Double latitude;
 
   @Column(nullable = false)
-  public Double longitude;
+  private Double longitude;
 
   @OneToMany(mappedBy = "location")
-  public List<Activity> activities;
+  private List<Activity> activities;
 }

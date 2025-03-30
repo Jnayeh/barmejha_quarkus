@@ -1,4 +1,4 @@
-package org.barmejha.resources;
+package org.barmejha.rest;
 
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -55,14 +55,14 @@ public class ScheduleResource {
   public Schedule updateSchedule(@PathParam("id") Long id, Schedule updatedSchedule) {
     Schedule schedule = scheduleRepository.findById(id);
     if (schedule != null) {
-      schedule.startDate = updatedSchedule.startDate;
-      schedule.endDate = updatedSchedule.endDate;
-      schedule.recurrence = updatedSchedule.recurrence;
-      schedule.recurringDays = updatedSchedule.recurringDays;
-      schedule.startTime = updatedSchedule.startTime;
-      schedule.endTime = updatedSchedule.endTime;
-      schedule.breaks = updatedSchedule.breaks;
-      schedule.excludedDates = updatedSchedule.excludedDates;
+      schedule.setStartDate(updatedSchedule.getStartDate());
+      schedule.setEndDate(updatedSchedule.getEndDate());
+      schedule.setRecurrence(updatedSchedule.getRecurrence());
+      schedule.setRecurringDays(updatedSchedule.getRecurringDays());
+      schedule.setStartTime(updatedSchedule.getStartTime());
+      schedule.setEndTime(updatedSchedule.getEndTime());
+      schedule.setBreaks(updatedSchedule.getBreaks());
+      schedule.setExcludedDates(updatedSchedule.getExcludedDates());
     }
     return schedule;
   }

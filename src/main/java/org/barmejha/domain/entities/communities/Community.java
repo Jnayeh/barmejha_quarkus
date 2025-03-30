@@ -2,12 +2,17 @@ package org.barmejha.domain.entities.communities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.barmejha.domain.entities.audit.AuditedEntity;
+import org.barmejha.domain.idgenerator.USID;
 
 import java.util.List;
 
@@ -16,20 +21,21 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
+@Valid
 @Entity
 @Table(name = "communities")
 public class Community extends AuditedEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  public Long id;
+  @USID
+  private Long id;
 
   @Column(unique = true, nullable = false)
-  public String name;
+  private String name;
 
-  public String description;
+  private String description;
 
   @OneToMany(mappedBy = "community")
-  public List<Post> posts;
+  private List<Post> posts;
 }
 

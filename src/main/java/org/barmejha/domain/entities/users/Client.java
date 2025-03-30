@@ -4,6 +4,12 @@ import jakarta.persistence.CollectionTable;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Set;
 
@@ -12,11 +18,12 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+@Valid
 @Entity
 @DiscriminatorValue("CLIENT")
 public class Client extends User {
 
   @ElementCollection
   @CollectionTable(name = "client_preferences")
-  public Set<Long> preferredTagIds;
+  private Set<Long> preferredTagIds;
 }

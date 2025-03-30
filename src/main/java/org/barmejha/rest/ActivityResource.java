@@ -1,4 +1,4 @@
-package org.barmejha.resources;
+package org.barmejha.rest;
 
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -49,11 +49,11 @@ public class ActivityResource {
   public Activity updateActivity(@PathParam("id") Long id, Activity updatedActivity) {
     Activity activity = activityRepository.findById(id);
     if (activity != null) {
-      activity.name = updatedActivity.name;
-      activity.description = updatedActivity.description;
-      activity.duration = updatedActivity.duration;
-      activity.basePrice = updatedActivity.basePrice;
-      activity.discountPrice = updatedActivity.discountPrice;
+      activity.setName(updatedActivity.getName());
+      activity.setDescription(updatedActivity.getDescription());
+      activity.setDuration(updatedActivity.getDuration());
+      activity.setBasePrice(updatedActivity.getBasePrice());
+      activity.setDiscountPrice(updatedActivity.getDiscountPrice());
     }
     return activity;
   }

@@ -1,4 +1,4 @@
-package org.barmejha.resources;
+package org.barmejha.rest;
 
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -49,10 +49,10 @@ public class PaymentResource {
   public Payment updatePayment(@PathParam("id") Long id, Payment updatedPayment) {
     Payment payment = paymentRepository.findById(id);
     if (payment != null) {
-      payment.amount = updatedPayment.amount;
-      payment.currency = updatedPayment.currency;
-      payment.status = updatedPayment.status;
-      payment.transactionId = updatedPayment.transactionId;
+      payment.setAmount(updatedPayment.getAmount());
+      payment.setCurrency(updatedPayment.getCurrency());
+      payment.setStatus(updatedPayment.getStatus());
+      payment.setTransactionId(updatedPayment.getTransactionId());
     }
     return payment;
   }

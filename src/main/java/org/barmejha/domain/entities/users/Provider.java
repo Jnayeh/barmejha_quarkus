@@ -4,6 +4,11 @@ import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.barmejha.domain.entities.Activity;
 
 import java.util.List;
@@ -18,13 +23,13 @@ import java.util.List;
 public class Provider extends User {
 
   @Column(nullable = false)
-  public String businessName;
+  private String businessName;
 
   @Column(unique = true)
-  public String taxId;
+  private String taxId;
 
-  public String logo;
+  private String logo;
 
   @OneToMany(mappedBy = "provider")
-  public List<Activity> activities;
+  private List<Activity> activities;
 }

@@ -1,14 +1,10 @@
-package org.barmejha.domain.idgenerator;
+package org.barmejha.domain.id.generators.ulid;
 
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.id.IdentifierGenerator;
-
-import java.io.Serializable;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.time.Instant;
 
-public class ULIDGenerator implements IdentifierGenerator {
+public class Generator {
 
   // New alphabet with 26 characters
   private static final char[] ENCODING_CHARS = "0123456789ACEFGHJMPRSTVXYZ".toCharArray();
@@ -63,10 +59,5 @@ public class ULIDGenerator implements IdentifierGenerator {
       ulid[i] = ENCODING_CHARS[divRem[1].intValue()];
       randomValue = divRem[0];
     }
-  }
-
-  @Override
-  public Serializable generate(SharedSessionContractImplementor session, Object object) {
-    return generateID();
   }
 }

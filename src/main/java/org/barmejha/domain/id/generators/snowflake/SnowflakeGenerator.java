@@ -1,16 +1,16 @@
-package org.barmejha.domain.idgenerator.snowflake;
+package org.barmejha.domain.id.generators.snowflake;
 
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.barmejha.domain.idgenerator.snowflake.SnowflakeConfig.CLOCK_BACKWARD_TOLERANCE;
-import static org.barmejha.domain.idgenerator.snowflake.SnowflakeConfig.DATA_CENTER_ID_SHIFT;
-import static org.barmejha.domain.idgenerator.snowflake.SnowflakeConfig.DEFAULT_EPOCH;
-import static org.barmejha.domain.idgenerator.snowflake.SnowflakeConfig.MACHINE_ID_SHIFT;
-import static org.barmejha.domain.idgenerator.snowflake.SnowflakeConfig.MAX_DATA_CENTER_ID;
-import static org.barmejha.domain.idgenerator.snowflake.SnowflakeConfig.MAX_MACHINE_ID;
-import static org.barmejha.domain.idgenerator.snowflake.SnowflakeConfig.SEQUENCE_MASK;
-import static org.barmejha.domain.idgenerator.snowflake.SnowflakeConfig.TIMESTAMP_LEFT_SHIFT;
+import static org.barmejha.domain.id.generators.snowflake.SnowflakeConfig.CLOCK_BACKWARD_TOLERANCE;
+import static org.barmejha.domain.id.generators.snowflake.SnowflakeConfig.DATA_CENTER_ID_SHIFT;
+import static org.barmejha.domain.id.generators.snowflake.SnowflakeConfig.DEFAULT_EPOCH;
+import static org.barmejha.domain.id.generators.snowflake.SnowflakeConfig.MACHINE_ID_SHIFT;
+import static org.barmejha.domain.id.generators.snowflake.SnowflakeConfig.MAX_DATA_CENTER_ID;
+import static org.barmejha.domain.id.generators.snowflake.SnowflakeConfig.MAX_MACHINE_ID;
+import static org.barmejha.domain.id.generators.snowflake.SnowflakeConfig.SEQUENCE_MASK;
+import static org.barmejha.domain.id.generators.snowflake.SnowflakeConfig.TIMESTAMP_LEFT_SHIFT;
 
 
 /**
@@ -34,14 +34,10 @@ import static org.barmejha.domain.idgenerator.snowflake.SnowflakeConfig.TIMESTAM
  * <a href="https://blog.twitter.com/engineering/en_us/a/2010/announcing-snowflake">Twitter Engineering Blog</a>.
  * </p>
  */
-public class SnowflakeIdGenerator {
+public class SnowflakeGenerator {
   private final int dataCenterId; // ID of the data center
   private final int machineId; // ID of the machine
   private final long epoch; // The epoch used for ID generation
-
-  private record State(long timestamp, int sequence) {
-  }
-
   // Atomic reference to the current state
   private final AtomicReference<State> atomicState = new AtomicReference<>(new State(-1L, 0));
 
@@ -49,10 +45,10 @@ public class SnowflakeIdGenerator {
    * Constructor to initialize the Snowflake ID generator with default epoch.
    *
    * @param dataCenterId The ID of the data center (0-31). Cannot be null.
-   * @param machineId The ID of the machine (0-31). Cannot be null.
+   * @param machineId    The ID of the machine (0-31). Cannot be null.
    * @throws IllegalArgumentException if the dataCenterId, machineId is out of range, or custom epoch is invalid.
    */
-  public SnowflakeIdGenerator(int dataCenterId, int machineId) {
+  public SnowflakeGenerator(int dataCenterId, int machineId) {
     this(dataCenterId, machineId, DEFAULT_EPOCH);
   }
 
@@ -60,11 +56,11 @@ public class SnowflakeIdGenerator {
    * Constructor to initialize the Snowflake ID generator with a custom epoch.
    *
    * @param dataCenterId The ID of the data center (0-31). Cannot be null.
-   * @param machineId The ID of the machine (0-31). Cannot be null.
-   * @param customEpoch The custom epoch to use for generating IDs
+   * @param machineId    The ID of the machine (0-31). Cannot be null.
+   * @param customEpoch  The custom epoch to use for generating IDs
    * @throws IllegalArgumentException if the dataCenterId or machineId is out of range
    */
-  public SnowflakeIdGenerator(int dataCenterId, int machineId, long customEpoch) {
+  public SnowflakeGenerator(int dataCenterId, int machineId, long customEpoch) {
     if (customEpoch > currentTimeMillis())
       throw new IllegalArgumentException("Custom epoch cannot be in the future");
     if (customEpoch < 0)
@@ -119,7 +115,7 @@ public class SnowflakeIdGenerator {
    * </p>
    *
    * @param timestamp The current timestamp in milliseconds
-   * @param sequence The sequence number for the current millisecond
+   * @param sequence  The sequence number for the current millisecond
    * @return A unique 64-bit Snowflake ID
    */
   private long generateId(long timestamp, int sequence) {
@@ -163,12 +159,15 @@ public class SnowflakeIdGenerator {
    * If the clock moves backwards beyond the defined tolerance, this method will throw an exception.
    * </p>
    *
-   * @param lastTimestamp The timestamp of the last ID generated
+   * @param lastTimestamp    The timestamp of the last ID generated
    * @param currentTimestamp The current system timestamp
    * @throws ClockMovedBackwardsException if the clock moves backwards beyond the tolerance limit
    */
   private void checkClockTolerance(long lastTimestamp, long currentTimestamp) {
     if (currentTimestamp + CLOCK_BACKWARD_TOLERANCE < lastTimestamp)
       throw new ClockMovedBackwardsException(lastTimestamp, currentTimestamp);
+  }
+
+  private record State(long timestamp, int sequence) {
   }
 }

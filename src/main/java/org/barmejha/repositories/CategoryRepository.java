@@ -1,14 +1,18 @@
 package org.barmejha.repositories;
 
-import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.barmejha.domain.entities.Category;
-
-import java.util.Optional;
+import org.barmejha.repositories.generic.GenericRepository;
 
 @ApplicationScoped
-public class CategoryRepository implements PanacheRepository<Category> {
-  public Optional<Category> findByName(String name) {
-    return find("name", name).firstResultOptional();
+public class CategoryRepository extends GenericRepository<Category> {
+  public Uni<Category> findByName(String name) {
+    return find("name", name).firstResult();
+  }
+
+  @Override
+  protected String getEntityName() {
+    return "categories e";
   }
 }

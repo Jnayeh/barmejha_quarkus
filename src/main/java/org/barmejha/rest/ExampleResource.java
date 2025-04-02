@@ -31,6 +31,21 @@ public class ExampleResource {
 
   private final ActivityRepository activityRepository;
 
+  private static String slowest() {
+    log.warn("Hello from slowest REST");
+    return "";
+  }
+
+  private static String slower() {
+    log.warn("Hello from slower REST");
+    return "";
+  }
+
+  private static String fast() {
+    log.warn("Hello from fast REST");
+    return "";
+  }
+
   @GET
   @Path("/hello")
   @Produces(MediaType.TEXT_PLAIN)
@@ -46,29 +61,14 @@ public class ExampleResource {
     var h = new HashMap<String, String>();
     h.put("hello", "Hello from Quarkus REST");
     return Uni.combine().all().unis(
-        Uni.createFrom().item("slowest()").onItem().delayIt().by(Duration.ofMillis(2000))
-            .map(t -> slowest()),
-        Uni.createFrom().item("fast()").onItem().delayIt().by(Duration.ofMillis(500))
-            .map(t -> fast()),
-        Uni.createFrom().item("slower()").onItem().delayIt().by(Duration.ofMillis(1000))
-            .map(t -> slower())
-    ).asTuple()
+            Uni.createFrom().item("slowest()").onItem().delayIt().by(Duration.ofMillis(2000))
+                .map(t -> slowest()),
+            Uni.createFrom().item("fast()").onItem().delayIt().by(Duration.ofMillis(500))
+                .map(t -> fast()),
+            Uni.createFrom().item("slower()").onItem().delayIt().by(Duration.ofMillis(1000))
+                .map(t -> slower())
+        ).asTuple()
         .map(t -> h);
-  }
-
-  private static String slowest() {
-    log.warn("Hello from slowest REST");
-          return "";
-  }
-
-  private static String slower() {
-    log.warn("Hello from slower REST");
-    return "";
-  }
-
-  private static String fast() {
-    log.warn("Hello from fast REST");
-    return "";
   }
 
   @Tag(name = "add activity")
@@ -80,7 +80,7 @@ public class ExampleResource {
 
   public List<Activity> helloJson(Activity myEntity) {
     myEntity.persistAndFlush();
-    var activities = activityRepository.findAll(Sort.by("id")).stream().toList();
+    var activities = activityRepository.findAll(Sort.by("id")).list().await().indefinitely();
     Log.warn("Activities: " + activities);
     return activities;
   }
@@ -91,8 +91,7 @@ public class ExampleResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
 
-  public List<Payment> helloJson(Payment payment) {
-    payment.persist();
-    return Payment.listAll();
+  public Uni<List<Payment>> helloJson(Payment payment) {
+    return payment.persist().flatMap(t-> Payment.listAll());
   }
 }

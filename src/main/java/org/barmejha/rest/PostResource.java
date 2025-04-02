@@ -5,12 +5,12 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import lombok.AllArgsConstructor;
-import org.barmejha.domain.entities.Category;
+import org.barmejha.domain.entities.communities.Post;
 import org.barmejha.rest.interfaces.IEntityResource;
 
-@Path("/categories")
+@Path("/posts")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @AllArgsConstructor
-public class CategoryResource extends IEntityResource<Category> {
+public class PostResource extends IEntityResource<Post> {
 }

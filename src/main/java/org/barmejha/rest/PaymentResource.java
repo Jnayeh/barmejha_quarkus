@@ -1,5 +1,6 @@
 package org.barmejha.rest;
 
+import io.smallrye.mutiny.Uni;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -13,7 +14,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
 import org.barmejha.domain.entities.Payment;
-import org.barmejha.repositories.PaymentRepository;
+import org.barmejha.services.PaymentService;
 
 import java.util.List;
 
@@ -23,44 +24,36 @@ import java.util.List;
 @AllArgsConstructor
 public class PaymentResource {
 
-  private final PaymentRepository paymentRepository;
+  private final PaymentService paymentService;
 
   @GET
-  public List<Payment> getAllPayments() {
-    return paymentRepository.listAll();
+  public Uni<List<Payment>> getAllPayments() {
+    return paymentService.getAll();
   }
 
   @GET
   @Path("/{id}")
-  public Payment getPaymentById(@PathParam("id") Long id) {
-    return paymentRepository.findById(id);
+  public Uni<Payment> getPaymentById(@PathParam("id") Long id) {
+    return paymentService.getById(id);
   }
 
   @POST
   @Transactional
-  public Response createPayment(Payment payment) {
-    paymentRepository.persist(payment);
-    return Response.status(201).entity(payment).build();
+  public Uni<Response> createPayment(Payment payment) {
+    return paymentService.create(payment);
   }
 
   @PUT
   @Path("/{id}")
   @Transactional
-  public Payment updatePayment(@PathParam("id") Long id, Payment updatedPayment) {
-    Payment payment = paymentRepository.findById(id);
-    if (payment != null) {
-      payment.setAmount(updatedPayment.getAmount());
-      payment.setCurrency(updatedPayment.getCurrency());
-      payment.setStatus(updatedPayment.getStatus());
-      payment.setTransactionId(updatedPayment.getTransactionId());
-    }
-    return payment;
+  public Uni<Payment> updatePayment(@PathParam("id") Long id, Payment updatedPayment) {
+    return paymentService.update(id, updatedPayment);
   }
 
   @DELETE
   @Path("/{id}")
   @Transactional
-  public void deletePayment(@PathParam("id") Long id) {
-    paymentRepository.deleteById(id);
+  public Uni<Boolean> deletePayment(@PathParam("id") Long id) {
+   return paymentService.delete(id);
   }
 }

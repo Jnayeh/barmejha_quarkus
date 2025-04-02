@@ -13,13 +13,12 @@ import jakarta.persistence.Table;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.barmejha.domain.entities.audit.AuditedEntity;
 import org.barmejha.domain.enums.UserType;
-import org.barmejha.domain.idgenerator.USID;
+import org.barmejha.domain.id.USID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -40,7 +39,7 @@ public class User extends AuditedEntity {
   @Email
   private String email;
 
-  @Column(nullable = false)
+  @Column(name = "password_hash", nullable = false)
   private String passwordHash;
 
   @Column(name = "user_type", insertable = false, updatable = false)
@@ -48,7 +47,12 @@ public class User extends AuditedEntity {
   private UserType type;
 
   // Common fields for all users
+  @Column(name = "user_name", unique = true)
   private String userName;
+
+  @Column(name = "first_name")
   private String firstName;
+
+  @Column(name = "last_name")
   private String lastName;
 }

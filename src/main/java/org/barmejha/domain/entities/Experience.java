@@ -16,7 +16,7 @@ import lombok.Setter;
 import org.barmejha.domain.entities.audit.AuditedEntity;
 import org.barmejha.domain.entities.media.MediaContent;
 import org.barmejha.domain.entities.users.Client;
-import org.barmejha.domain.idgenerator.USID;
+import org.barmejha.domain.id.USID;
 import org.hibernate.validator.constraints.Range;
 
 import java.util.List;

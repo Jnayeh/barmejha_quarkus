@@ -1,5 +1,6 @@
 package org.barmejha.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,13 +17,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.barmejha.domain.entities.audit.AuditedEntity;
 import org.barmejha.domain.entities.media.MediaContent;
 import org.barmejha.domain.entities.users.Provider;
-import org.barmejha.domain.idgenerator.USID;
+import org.barmejha.domain.id.USID;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -56,10 +55,11 @@ public class Activity extends AuditedEntity {
   @NotNull
   private int duration;
 
-  @Column(nullable = false)
+  @Column(name = "base_price", nullable = false)
   @NotNull
   private BigDecimal basePrice;
 
+  @Column(name = "discount_price")
   private BigDecimal discountPrice;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -71,9 +71,11 @@ public class Activity extends AuditedEntity {
   private Set<Tag> tags;
 
   @OneToMany(mappedBy = "activity")
+  @JsonIgnoreProperties("activity")
   private List<Schedule> schedules;
 
   @OneToMany(mappedBy = "activity")
+  @JsonIgnoreProperties("activity")
   private List<Experience> experiences;
 
   @ManyToOne(fetch = FetchType.LAZY)

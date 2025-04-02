@@ -1,5 +1,6 @@
 package org.barmejha.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.barmejha.domain.entities.audit.AuditedEntity;
 import org.barmejha.domain.entities.media.MediaContent;
-import org.barmejha.domain.idgenerator.USID;
+import org.barmejha.domain.id.USID;
 
 import java.util.Set;
 
@@ -42,9 +43,10 @@ public class Category extends AuditedEntity {
   @JoinColumn(name = "category_id", nullable = false)
   private MediaContent media;
 
-  @Column(length = 7)
+  @Column(name = "hex_color", length = 7)
   private String hexColor;
 
-  @ManyToMany(mappedBy = "categories")
+  @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY)
+  @JsonIgnoreProperties("categories")
   private Set<Activity> activities;
 }

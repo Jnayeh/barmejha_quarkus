@@ -1,5 +1,6 @@
 package org.barmejha.domain.entities.communities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -12,7 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.barmejha.domain.entities.audit.AuditedEntity;
-import org.barmejha.domain.idgenerator.USID;
+import org.barmejha.domain.id.USID;
 
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class Community extends AuditedEntity {
   private String description;
 
   @OneToMany(mappedBy = "community")
+  @JsonIgnoreProperties("community")
   private List<Post> posts;
 }
 

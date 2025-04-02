@@ -1,6 +1,6 @@
 package org.barmejha.domain.entities;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.barmejha.domain.enums.PaymentStatus;
-import org.barmejha.domain.idgenerator.ULID;
+import org.barmejha.domain.id.ULID;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -49,10 +49,10 @@ public class Payment extends PanacheEntityBase {
   @Column(nullable = false)
   private PaymentStatus status;
 
-  @Column(unique = true)
+  @Column(name = "transaction_id", unique = true)
   private String transactionId;
 
-  @Column(nullable = false)
+  @Column(name = "processed_at", nullable = false)
   private Instant processedAt;
 
 

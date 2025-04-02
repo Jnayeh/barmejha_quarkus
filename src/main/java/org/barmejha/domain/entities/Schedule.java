@@ -21,7 +21,7 @@ import org.barmejha.domain.entities.schedule.LocalDateConverter;
 import org.barmejha.domain.entities.schedule.TimeRange;
 import org.barmejha.domain.entities.schedule.TimeRangeConverter;
 import org.barmejha.domain.enums.RecurrencePattern;
-import org.barmejha.domain.idgenerator.USID;
+import org.barmejha.domain.id.USID;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -45,9 +45,10 @@ public class Schedule extends AuditedEntity {
   @JoinColumn(name = "activity_id", nullable = false)
   private Activity activity;
 
-  @Column(nullable = false)
+  @Column(nullable = false, name = "start_date")
   private LocalDate startDate;
 
+  @Column(name = "end_date")
   private LocalDate endDate;
 
   @Enumerated(EnumType.STRING)
@@ -55,13 +56,13 @@ public class Schedule extends AuditedEntity {
   private RecurrencePattern recurrence;
 
   @Convert(converter = DaysOfWeekConverter.class)
-  @Column(columnDefinition = "TEXT")
+  @Column(columnDefinition = "TEXT", name = "recurring_days")
   private Set<DayOfWeek> recurringDays;
 
-  @Column(nullable = false)
+  @Column(nullable = false, name = "start_time")
   private LocalTime startTime;
 
-  @Column(nullable = false)
+  @Column(nullable = false, name = "end_time")
   private LocalTime endTime;
 
   @Convert(converter = TimeRangeConverter.class)
@@ -69,7 +70,7 @@ public class Schedule extends AuditedEntity {
   private Set<TimeRange> breaks;
 
   @Convert(converter = LocalDateConverter.class)
-  @Column(columnDefinition = "TEXT")
+  @Column(columnDefinition = "TEXT", name = "excluded_dates")
   private Set<LocalDate> excludedDates;
 }
 

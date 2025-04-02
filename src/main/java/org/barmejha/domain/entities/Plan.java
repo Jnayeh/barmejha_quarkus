@@ -1,5 +1,6 @@
 package org.barmejha.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -25,7 +26,7 @@ import org.barmejha.domain.entities.users.User;
 import org.barmejha.domain.enums.PaymentType;
 import org.barmejha.domain.enums.PlanStatus;
 import org.barmejha.domain.enums.PlanType;
-import org.barmejha.domain.idgenerator.USID;
+import org.barmejha.domain.id.USID;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -52,31 +53,46 @@ public class Plan extends AuditedEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "client_id", nullable = false)
   private Client client;
-  @Column(nullable = false)
+
+  @Column(nullable = false, name = "start_time")
   private LocalDateTime startTime;
-  @Column(nullable = false)
+
+  @Column(nullable = false, name = "end_time")
   private LocalDateTime endTime;
+
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private PlanStatus status;
-  @Column(nullable = false)
+
+  @Column(nullable = false, name = "final_price")
   private BigDecimal finalPrice;
+
   @Enumerated(EnumType.STRING)
   @Builder.Default
   private PlanType type = PlanType.PRIVATE;
+
   @Builder.Default
+  @Column(name = "payment_type")
   private PaymentType paymentType = PaymentType.CREATOR;
+
   private String title;
+
   @Column(length = 1000)
   private String description;
+
   @ManyToMany(fetch = FetchType.LAZY)
   private Set<User> participants;
+
   @OneToMany(fetch = FetchType.LAZY)
+  @JsonIgnoreProperties({"post", "plan"})
   private Set<Comment> comments;
+
   @Min(1)
-  @Column(nullable = false)
+  @Column(name = "min_participants", nullable = false)
   @Builder.Default
   private int minParticipants = 1;
+
+  @Column(name = "max_participants")
   private int maxParticipants;
 
 }

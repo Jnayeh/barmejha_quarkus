@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.barmejha.domain.entities.audit.AuditedEntity;
 import org.barmejha.domain.enums.MediaType;
-import org.barmejha.domain.idgenerator.USID;
+import org.barmejha.domain.id.USID;
 
 @Builder
 @NoArgsConstructor
@@ -25,11 +25,11 @@ import org.barmejha.domain.idgenerator.USID;
 public class MediaContent extends AuditedEntity {
   @Id
   @USID
-  private  Long id;
+  private Long id;
 
   @Column(columnDefinition = "TEXT")
-  private  String url;
+  private String url;
 
   @Enumerated(EnumType.STRING)
-  private  MediaType type;
+  private MediaType type;
 }

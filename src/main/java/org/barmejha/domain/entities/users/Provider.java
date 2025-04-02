@@ -1,5 +1,6 @@
 package org.barmejha.domain.entities.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -22,14 +23,15 @@ import java.util.List;
 @DiscriminatorValue("PROVIDER")
 public class Provider extends User {
 
-  @Column(nullable = false)
+  @Column(name = "business_name")
   private String businessName;
 
-  @Column(unique = true)
+  @Column(name = "tax_id")
   private String taxId;
 
   private String logo;
 
   @OneToMany(mappedBy = "provider")
+  @JsonIgnoreProperties("provider")
   private List<Activity> activities;
 }

@@ -13,11 +13,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.barmejha.domain.entities.Plan;
 import org.barmejha.domain.entities.audit.AuditedEntity;
 import org.barmejha.domain.entities.users.User;
-import org.barmejha.domain.idgenerator.USID;
-
-import java.time.Instant;
+import org.barmejha.domain.id.USID;
 
 @Builder
 @NoArgsConstructor
@@ -34,8 +33,12 @@ public class Comment extends AuditedEntity {
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "post_id", nullable = false)
+  @JoinColumn(name = "post_id")
   private Post post;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "plan_id")
+  private Plan plan;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "author_id", nullable = false)

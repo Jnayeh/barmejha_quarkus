@@ -4,81 +4,119 @@ import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
-import org.barmejha.domain.request.QueryRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.barmejha.config.utils.HeaderHolder;
 import org.barmejha.domain.dtos.UserDTO;
+import org.barmejha.domain.entities.users.Admin;
+import org.barmejha.domain.entities.users.Client;
 import org.barmejha.domain.entities.users.Provider;
 import org.barmejha.domain.entities.users.User;
-import org.barmejha.domain.enums.UserType;
+import org.barmejha.domain.mappers.UserMapper;
+import org.barmejha.domain.request.QueryRequest;
 import org.barmejha.repositories.UserRepository;
 import org.barmejha.services.interfaces.IEntityService;
 import org.barmejha.services.utils.ServiceUtils;
 
 import java.util.List;
 
+@Slf4j
 @ApplicationScoped
 @RequiredArgsConstructor
-public class UserService implements IEntityService<UserDTO> {
+public class UserService implements IEntityService<User, UserDTO> {
 
   private final UserRepository userRepository;
+  private final HeaderHolder headerHolder;
 
   @Override
   @WithSession
-  public Uni<List<UserDTO>> getAll(HttpHeaders headers, String lang, String tenantId) {
-    return userRepository.listAll();
+  public Uni<List<UserDTO>> getAll(HttpHeaders headers, QueryRequest queryRequest) {
+    return userRepository.listAll().map(list -> list.stream().map(this::toDTO).toList());
   }
 
   @Override
   @WithSession
-  public Uni<List<UserDTO>> query(HttpHeaders headers, QueryRequest<UserDTO> queryRequest) {
-    return userRepository.findByQuery(queryRequest);
+  public Uni<List<UserDTO>> query(HttpHeaders headers, QueryRequest queryRequest) {
+    return userRepository.findByQuery(queryRequest).map(list -> list.stream().map(this::toDTO).toList());
   }
 
   @Override
   @WithSession
   public Uni<UserDTO> getById(HttpHeaders headers, Long id) {
-    return userRepository.findById(id);
+    return userRepository.findById(id).map(this::toDTO);
   }
 
   @Override
   @WithTransaction
-  @Transactional
-  public Uni<Response> create(HttpHeaders headers, UserDTO entity) {
-
-      if (entity.getType() == UserType.PROVIDER) {
-        Provider p = (Provider) entity;
+  public Uni<Response> create(HttpHeaders headers, User entity) {
+    log.warn("Creating user: {}", entity);
+    switch (entity.getType()) {
+      case CLIENT -> {
+        Client u = (Client) entity;
+        return userRepository.persist(u).map(this::toDTO).map(ServiceUtils::createdResponse)
+            .onItem().failWith(t -> new Throwable("custom transaction check"));
       }
-    return userRepository.persist(entity).map(ServiceUtils::createdResponse);
+      case ADMIN -> {
+        Admin a = (Admin) entity;
+        return userRepository.persist(a).map(this::toDTO).map(ServiceUtils::createdResponse);
+      }
+      case PROVIDER -> {
+        Provider p = (Provider) entity;
+        return userRepository.persist(p).map(this::toDTO).map(ServiceUtils::createdResponse);
+      }
+    }
+    return null;
   }
+
+/*
+  public Uni<Response> update(HttpHeaders headers, Long id, UserDTO updatedEntity) {
+    throw new UnsupportedOperationException("Not implemented");
+  }
+
+  @WithTransaction   
+  public Uni<Response> create(HttpHeaders headers, UserDTO entity) {
+    return switch (entity.getType()) {
+      case CLIENT -> {
+        Client u = UserMapper.INSTANCE.toClient(entity);
+        yield userRepository.persist(u).map(this::toDTO).map(ServiceUtils::createdResponse);
+      }
+      case ADMIN -> {
+        Admin a = UserMapper.INSTANCE.toAdmin(entity);
+        yield userRepository.persist(a).map(this::toDTO).map(ServiceUtils::createdResponse);
+      }
+      case PROVIDER -> {
+        Provider p = UserMapper.INSTANCE.toProvider(entity);
+        yield userRepository.persist(p).map(this::toDTO).map(ServiceUtils::createdResponse);
+      }
+    };
+  }
+  */
 
   @Override
   @WithTransaction
-  @Transactional
-  public Uni<Response> update(HttpHeaders headers, Long id, UserDTO updatedEntity) {
+  public Uni<Response> update(HttpHeaders headers, Long id, User updatedEntity) {
     return userRepository.findById(id).onItem().transform(found -> {
       found.setEmail(updatedEntity.getEmail());
       found.setFirstName(updatedEntity.getFirstName());
       found.setUserName(updatedEntity.getUserName());
       found.setLastName(updatedEntity.getLastName());
       return found;
-    }).map(userRepository::persist).map(ServiceUtils::okResponse);
+    }).flatMap(userRepository::persist).map(this::toDTO).map(ServiceUtils::okResponse);
   }
 
-  @Transactional
+
   @WithTransaction
-  public Uni<Response> changePass(HttpHeaders headers, Long id, UserDTO updatedEntity) {
+  public Uni<Response> changePass(HttpHeaders headers, Long id, User updatedEntity) {
     return userRepository.findById(id).onItem().transform(found -> {
       found.setPasswordHash(updatedEntity.getPasswordHash());
       return found;
-    }).map(userRepository::persist).map(ServiceUtils::okResponse);
+    }).flatMap(userRepository::persist).map(this::toDTO).map(ServiceUtils::okResponse);
   }
 
   @Override
   @WithTransaction
-  @Transactional
   public Uni<Response> delete(HttpHeaders headers, Long id) {
     return userRepository.deleteById(id).map(isDeleted -> {
       if (isDeleted) return Response.status(204).build();
@@ -86,10 +124,14 @@ public class UserService implements IEntityService<UserDTO> {
     });
   }
 
-  @Override
   @WithSession
-  public Uni<Long> count(HttpHeaders headers, QueryRequest<UserDTO> request) {
-    User user =
+  public Uni<Long> count(HttpHeaders headers, QueryRequest request) {
     return userRepository.countByQuery(request);
+  }
+
+  @Override
+  public UserDTO toDTO(User entity) {
+    if (entity == null) return null;
+    return UserMapper.INSTANCE.toDTO(entity, headerHolder.getLang());
   }
 }

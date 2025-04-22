@@ -4,12 +4,14 @@ import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
-import org.barmejha.domain.request.QueryRequest;
+import org.barmejha.config.utils.HeaderHolder;
+import org.barmejha.domain.dtos.PostDTO;
 import org.barmejha.domain.entities.communities.Post;
+import org.barmejha.domain.mappers.PostMapper;
+import org.barmejha.domain.request.QueryRequest;
 import org.barmejha.repositories.PostRepository;
 import org.barmejha.services.interfaces.IEntityService;
 import org.barmejha.services.utils.ServiceUtils;
@@ -18,61 +20,63 @@ import java.util.List;
 
 @ApplicationScoped
 @RequiredArgsConstructor
-public class PostService implements IEntityService<Post> {
+public class PostService implements IEntityService<Post, PostDTO> {
 
   private final PostRepository postRepository;
-
+  private final HeaderHolder headerHolder;
 
   @Override
   @WithSession
-  public Uni<List<Post>> getAll(HttpHeaders headers, String lang, String tenantId) {
-    return postRepository.listAll();
+  public Uni<List<PostDTO>> getAll(HttpHeaders headers, QueryRequest queryRequest) {
+    return postRepository.listAll().map(this::toDTO);
   }
 
   @Override
   @WithSession
-  public Uni<List<Post>> query(HttpHeaders headers, QueryRequest<Post> queryRequest) {
-    return postRepository.findByQuery(queryRequest);
+  public Uni<List<PostDTO>> query(HttpHeaders headers, QueryRequest queryRequest) {
+    return postRepository.findByQuery(queryRequest).map(this::toDTO);
   }
 
   @Override
   @WithSession
-  public Uni<Post> getById(HttpHeaders headers, Long id) {
-    return postRepository.findById(id);
+  public Uni<PostDTO> getById(HttpHeaders headers, Long id) {
+    return postRepository.findById(id).map(this::toDTO);
   }
 
   @Override
   @WithTransaction
-  @Transactional
   public Uni<Response> create(HttpHeaders headers, Post entity) {
-    return postRepository.persist(entity).map(ServiceUtils::createdResponse);
+    return postRepository.persist(entity).map(this::toDTO).map(ServiceUtils::createdResponse);
   }
 
   @Override
   @WithTransaction
-  @Transactional
   public Uni<Response> update(HttpHeaders headers, Long id, Post updatedEntity) {
     return postRepository.findById(id).onItem().transform(found -> {
       found.setContent(updatedEntity.getContent());
       found.setTitle(updatedEntity.getTitle());
       return found;
-    }).map(postRepository::persist).map(ServiceUtils::okResponse);
+    }).flatMap(postRepository::persist).map(this::toDTO).map(ServiceUtils::okResponse);
   }
 
   @Override
   @WithTransaction
-  @Transactional
   public Uni<Response> delete(HttpHeaders headers, Long id) {
     return postRepository.deleteById(id).map(isDeleted -> {
-      if (isDeleted) return Response.status(204).build();
+      if (Boolean.TRUE.equals(isDeleted)) return Response.status(204).build();
       return Response.status(404).build();
     });
   }
 
   @Override
   @WithSession
-  public Uni<Long> count(HttpHeaders headers, QueryRequest<Post> request) {
+  public Uni<Long> count(HttpHeaders headers, QueryRequest request) {
     return postRepository.countByQuery(request);
   }
 
+  @Override
+  public PostDTO toDTO(Post entity) {
+    if (entity == null) return null;
+    return PostMapper.INSTANCE.toDTO(entity, headerHolder.getLang());
+  }
 }

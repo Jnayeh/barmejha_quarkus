@@ -5,22 +5,30 @@ import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import org.barmejha.domain.request.QueryRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public interface IEntityService<T> {
+public interface IEntityService<E, D> {
 
-  Uni<List<T>> getAll(HttpHeaders headers, String lang, String tenantId);
+  Uni<List<D>> getAll(HttpHeaders headers, QueryRequest queryRequest);
 
-  Uni<List<T>> query(HttpHeaders headers, QueryRequest<T> queryRequest);
+  Uni<List<D>> query(HttpHeaders headers, QueryRequest queryRequest);
 
-  Uni<T> getById(HttpHeaders headers, Long id);
+  Uni<D> getById(HttpHeaders headers, Long id);
 
-  Uni<Response> create(HttpHeaders headers, T entity);
+  Uni<Response> create(HttpHeaders headers, E entity);
 
 
-  Uni<Response> update(HttpHeaders headers, Long id, T updatedEntity);
+  Uni<Response> update(HttpHeaders headers, Long id, E updatedEntity);
 
   Uni<Response> delete(HttpHeaders headers, Long id);
 
-  Uni<Long> count(HttpHeaders headers, QueryRequest<T> request);
+  Uni<Long> count(HttpHeaders headers, QueryRequest request);
+
+  D toDTO(E entity);
+
+  default List<D> toDTO(List<E> entityList) {
+    if (entityList == null) return new ArrayList<>();
+    return entityList.stream().map(this::toDTO).toList();
+  }
 }

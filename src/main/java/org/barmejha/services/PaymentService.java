@@ -4,7 +4,6 @@ import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
 import org.barmejha.domain.entities.Payment;
@@ -29,13 +28,13 @@ public class PaymentService {
     return paymentRepository.findById(id);
   }
 
-  @Transactional
+
   @WithTransaction
   public Uni<Response> create(Payment payment) {
     return paymentRepository.persist(payment).map(ServiceUtils::okResponse);
   }
 
-  @Transactional
+
   @WithTransaction
   public Uni<Payment> update(Long id, Payment updatedPayment) {
     return paymentRepository.findById(id).onItem().transform(payment -> {
@@ -49,7 +48,7 @@ public class PaymentService {
     });
   }
 
-  @Transactional
+
   @WithTransaction
   public Uni<Boolean> delete(Long id) {
     return paymentRepository.deleteById(id);

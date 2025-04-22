@@ -4,12 +4,14 @@ import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
-import org.barmejha.domain.request.QueryRequest;
+import org.barmejha.config.utils.HeaderHolder;
+import org.barmejha.domain.dtos.ScheduleDTO;
 import org.barmejha.domain.entities.Schedule;
+import org.barmejha.domain.mappers.ScheduleMapper;
+import org.barmejha.domain.request.QueryRequest;
 import org.barmejha.repositories.ScheduleRepository;
 import org.barmejha.services.interfaces.IEntityService;
 import org.barmejha.services.utils.ServiceUtils;
@@ -18,42 +20,41 @@ import java.util.List;
 
 @ApplicationScoped
 @RequiredArgsConstructor
-public class ScheduleService implements IEntityService<Schedule> {
+public class ScheduleService implements IEntityService<Schedule, ScheduleDTO> {
 
   private final ScheduleRepository scheduleRepository;
+  private final HeaderHolder headerHolder;
 
-  public Uni<List<Schedule>> getAllSchedulesByActivity(Long id) {
-    return scheduleRepository.findByActivityId(id);
+  public Uni<List<ScheduleDTO>> getAllSchedulesByActivity(Long id) {
+    return scheduleRepository.findByActivityId(id).map(this::toDTO);
   }
 
   @Override
   @WithSession
-  public Uni<List<Schedule>> getAll(HttpHeaders headers, String lang, String tenantId) {
-    return scheduleRepository.listAll();
+  public Uni<List<ScheduleDTO>> getAll(HttpHeaders headers, QueryRequest queryRequest) {
+    return scheduleRepository.listAll().map(this::toDTO);
   }
 
   @Override
   @WithSession
-  public Uni<List<Schedule>> query(HttpHeaders headers, QueryRequest<Schedule> queryRequest) {
-    return scheduleRepository.findByQuery(queryRequest);
+  public Uni<List<ScheduleDTO>> query(HttpHeaders headers, QueryRequest queryRequest) {
+    return scheduleRepository.findByQuery(queryRequest).map(this::toDTO);
   }
 
   @Override
   @WithSession
-  public Uni<Schedule> getById(HttpHeaders headers, Long id) {
-    return scheduleRepository.findById(id);
+  public Uni<ScheduleDTO> getById(HttpHeaders headers, Long id) {
+    return scheduleRepository.findById(id).map(this::toDTO);
   }
 
   @Override
-  @WithTransaction
-  @Transactional
+  @WithTransaction 
   public Uni<Response> create(HttpHeaders headers, Schedule entity) {
-    return scheduleRepository.persist(entity).map(ServiceUtils::createdResponse);
+    return scheduleRepository.persist(entity).map(this::toDTO).map(ServiceUtils::createdResponse);
   }
 
   @Override
-  @WithTransaction
-  @Transactional
+  @WithTransaction 
   public Uni<Response> update(HttpHeaders headers, Long id, Schedule updatedEntity) {
     return scheduleRepository.findById(id).onItem().transform(found -> {
       found.setStartDate(updatedEntity.getStartDate());
@@ -65,12 +66,11 @@ public class ScheduleService implements IEntityService<Schedule> {
       found.setBreaks(updatedEntity.getBreaks());
       found.setExcludedDates(updatedEntity.getExcludedDates());
       return found;
-    }).map(scheduleRepository::persist).map(ServiceUtils::okResponse);
+    }).flatMap(scheduleRepository::persist).map(this::toDTO).map(ServiceUtils::okResponse);
   }
 
   @Override
-  @WithTransaction
-  @Transactional
+  @WithTransaction 
   public Uni<Response> delete(HttpHeaders headers, Long id) {
     return scheduleRepository.deleteById(id).map(isDeleted -> {
       if (isDeleted) return Response.status(204).build();
@@ -80,7 +80,13 @@ public class ScheduleService implements IEntityService<Schedule> {
 
   @Override
   @WithSession
-  public Uni<Long> count(HttpHeaders headers, QueryRequest<Schedule> request) {
+  public Uni<Long> count(HttpHeaders headers, QueryRequest request) {
     return scheduleRepository.countByQuery(request);
+  }
+
+  @Override
+  public ScheduleDTO toDTO(Schedule entity) {
+    if (entity == null) return null;
+    return ScheduleMapper.INSTANCE.toDTO(entity, headerHolder.getLang());
   }
 }

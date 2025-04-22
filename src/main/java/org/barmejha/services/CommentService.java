@@ -4,12 +4,14 @@ import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
-import org.barmejha.domain.request.QueryRequest;
+import org.barmejha.config.utils.HeaderHolder;
+import org.barmejha.domain.dtos.CommentDTO;
 import org.barmejha.domain.entities.communities.Comment;
+import org.barmejha.domain.mappers.CommentMapper;
+import org.barmejha.domain.request.QueryRequest;
 import org.barmejha.repositories.CommentRepository;
 import org.barmejha.services.interfaces.IEntityService;
 import org.barmejha.services.utils.ServiceUtils;
@@ -18,48 +20,46 @@ import java.util.List;
 
 @ApplicationScoped
 @RequiredArgsConstructor
-public class CommentService implements IEntityService<Comment> {
+public class CommentService implements IEntityService<Comment, CommentDTO> {
 
   private final CommentRepository commentRepository;
+  private final HeaderHolder headerHolder;
 
   @Override
   @WithSession
-  public Uni<List<Comment>> getAll(HttpHeaders headers, String lang, String tenantId) {
-    return commentRepository.listAll();
+  public Uni<List<CommentDTO>> getAll(HttpHeaders headers, QueryRequest queryRequest) {
+    return commentRepository.listAll().map(this::toDTO);
   }
 
   @Override
   @WithSession
-  public Uni<List<Comment>> query(HttpHeaders headers, QueryRequest<Comment> queryRequest) {
-    return commentRepository.findByQuery(queryRequest);
+  public Uni<List<CommentDTO>> query(HttpHeaders headers, QueryRequest queryRequest) {
+    return commentRepository.findByQuery(queryRequest).map(this::toDTO);
   }
 
   @Override
   @WithSession
-  public Uni<Comment> getById(HttpHeaders headers, Long id) {
-    return commentRepository.findById(id);
+  public Uni<CommentDTO> getById(HttpHeaders headers, Long id) {
+    return commentRepository.findById(id).map(this::toDTO);
   }
 
   @Override
   @WithTransaction
-  @Transactional
   public Uni<Response> create(HttpHeaders headers, Comment entity) {
-    return commentRepository.persist(entity).map(ServiceUtils::createdResponse);
+    return commentRepository.persist(entity).map(this::toDTO).map(ServiceUtils::createdResponse);
   }
 
   @Override
   @WithTransaction
-  @Transactional
   public Uni<Response> update(HttpHeaders headers, Long id, Comment updatedEntity) {
     return commentRepository.findById(id).onItem().transform(found -> {
       found.setContent(updatedEntity.getContent());
       return found;
-    }).map(commentRepository::persist).map(ServiceUtils::okResponse);
+    }).flatMap(commentRepository::persist).map(this::toDTO).map(ServiceUtils::okResponse);
   }
 
   @Override
   @WithTransaction
-  @Transactional
   public Uni<Response> delete(HttpHeaders headers, Long id) {
     return commentRepository.deleteById(id).map(isDeleted -> {
       if (isDeleted) return Response.status(204).build();
@@ -69,7 +69,13 @@ public class CommentService implements IEntityService<Comment> {
 
   @Override
   @WithSession
-  public Uni<Long> count(HttpHeaders headers, QueryRequest<Comment> request) {
+  public Uni<Long> count(HttpHeaders headers, QueryRequest request) {
     return commentRepository.countByQuery(request);
+  }
+
+  @Override
+  public CommentDTO toDTO(Comment entity) {
+    if (entity == null) return null;
+    return CommentMapper.INSTANCE.toDTO(entity, headerHolder.getLang());
   }
 }

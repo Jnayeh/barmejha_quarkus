@@ -2,6 +2,7 @@ package org.barmejha.domain.mappers;
 
 import org.barmejha.domain.dtos.PostDTO;
 import org.barmejha.domain.entities.communities.Post;
+import org.barmejha.domain.mappers.config.MappingConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -14,11 +15,11 @@ import org.mapstruct.factory.Mappers;
     }
 )
 public interface PostMapper {
-    PostMapper INSTANCE = Mappers.getMapper(PostMapper.class);
+  PostMapper INSTANCE = Mappers.getMapper(PostMapper.class);
 
-    // Entity → DTO
-    PostDTO toDTO(Post entity);
+  // Entity → DTO
+  PostDTO toDTO(Post entity, String lang);
 
-    // DTO → Entity
-    Post toEntity(PostDTO dto);
+  // DTO → Entity
+  Post toEntity(PostDTO dto);
 }

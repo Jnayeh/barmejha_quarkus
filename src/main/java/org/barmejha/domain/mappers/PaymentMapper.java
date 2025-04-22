@@ -2,6 +2,7 @@ package org.barmejha.domain.mappers;
 
 import org.barmejha.domain.dtos.PaymentDTO;
 import org.barmejha.domain.entities.Payment;
+import org.barmejha.domain.mappers.config.MappingConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -13,11 +14,11 @@ import org.mapstruct.factory.Mappers;
     }
 )
 public interface PaymentMapper {
-    PaymentMapper INSTANCE = Mappers.getMapper(PaymentMapper.class);
+  PaymentMapper INSTANCE = Mappers.getMapper(PaymentMapper.class);
 
-    // Entity → DTO
-    PaymentDTO toDTO(Payment entity);
+  // Entity → DTO
+  PaymentDTO toDTO(Payment entity, String lang);
 
-    // DTO → Entity
-    Payment toEntity(PaymentDTO dto);
+  // DTO → Entity
+  Payment toEntity(PaymentDTO dto);
 }

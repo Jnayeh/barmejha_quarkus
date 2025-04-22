@@ -13,25 +13,25 @@ import java.util.List;
 
 @Provider
 public class ConstraintViolationExceptionMapper implements ExceptionMapper<ConstraintViolationException> {
-    @Context
-    UriInfo uriInfo;
-    
-    @Override
-    public Response toResponse(ConstraintViolationException ex) {
-        List<ErrorBody.ErrorDetails> errors = ex.getConstraintViolations()
-            .stream()
-            .map(v -> new ErrorBody.ErrorDetails(
-                v.getPropertyPath().toString(),
-                v.getMessage()
-            )).toList();
-        
-        return Response
-                .status(Response.Status.BAD_REQUEST)
-                .entity(new ErrorBody(
-                    Response.Status.BAD_REQUEST.name(),
-                    ErrorCode.INVALID_REQUEST.getMessage(),
-                    errors
-                ))
-                .build();
-    }
+  @Context
+  UriInfo uriInfo;
+
+  @Override
+  public Response toResponse(ConstraintViolationException ex) {
+    List<ErrorBody.ErrorDetails> errors = ex.getConstraintViolations()
+        .stream()
+        .map(v -> new ErrorBody.ErrorDetails(
+            v.getPropertyPath().toString(),
+            v.getMessage()
+        )).toList();
+
+    return Response
+        .status(Response.Status.BAD_REQUEST)
+        .entity(new ErrorBody(
+            Response.Status.BAD_REQUEST.name(),
+            ErrorCode.INVALID_REQUEST.getMessage(),
+            errors
+        ))
+        .build();
+  }
 }

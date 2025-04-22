@@ -2,6 +2,7 @@ package org.barmejha.domain.mappers;
 
 import org.barmejha.domain.dtos.CategoryDTO;
 import org.barmejha.domain.entities.Category;
+import org.barmejha.domain.mappers.config.MappingConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -13,11 +14,11 @@ import org.mapstruct.factory.Mappers;
     }
 )
 public interface CategoryMapper {
-    CategoryMapper INSTANCE = Mappers.getMapper(CategoryMapper.class);
+  CategoryMapper INSTANCE = Mappers.getMapper(CategoryMapper.class);
 
-    // Entity → DTO
-    CategoryDTO toDTO(Category entity);
+  // Entity → DTO
+  CategoryDTO toDTO(Category entity, String lang);
 
-    // DTO → Entity
-    Category toEntity(CategoryDTO dto);
+  // DTO → Entity
+  Category toEntity(CategoryDTO dto);
 }

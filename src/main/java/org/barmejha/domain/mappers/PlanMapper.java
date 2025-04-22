@@ -2,6 +2,7 @@ package org.barmejha.domain.mappers;
 
 import org.barmejha.domain.dtos.PlanDTO;
 import org.barmejha.domain.entities.Plan;
+import org.barmejha.domain.mappers.config.MappingConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -14,11 +15,11 @@ import org.mapstruct.factory.Mappers;
     }
 )
 public interface PlanMapper {
-    PlanMapper INSTANCE = Mappers.getMapper(PlanMapper.class);
+  PlanMapper INSTANCE = Mappers.getMapper(PlanMapper.class);
 
-    // Entity → DTO
-    PlanDTO toDTO(Plan entity);
+  // Entity → DTO
+  PlanDTO toDTO(Plan entity, String lang);
 
-    // DTO → Entity
-    Plan toEntity(PlanDTO dto);
+  // DTO → Entity
+  Plan toEntity(PlanDTO dto);
 }

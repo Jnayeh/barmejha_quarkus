@@ -1,4 +1,4 @@
-package org.barmejha.domain.mappers;
+package org.barmejha.domain.mappers.config;
 
 import org.mapstruct.MapperConfig;
 import org.mapstruct.NullValuePropertyMappingStrategy;

@@ -7,11 +7,11 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper
 public interface MediaMapper {
-    MediaMapper INSTANCE = Mappers.getMapper(MediaMapper.class);
+  MediaMapper INSTANCE = Mappers.getMapper(MediaMapper.class);
 
-    // Entity → DTO
-    MediaContentDTO toDTO(MediaContent entity);
+  // Entity → DTO
+  MediaContentDTO toDTO(MediaContent entity, String lang);
 
-    // DTO → Entity
-    MediaContent toEntity(MediaContentDTO dto);
+  // DTO → Entity
+  MediaContent toEntity(MediaContentDTO dto);
 }

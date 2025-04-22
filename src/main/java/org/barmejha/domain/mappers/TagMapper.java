@@ -7,11 +7,11 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper
 public interface TagMapper {
-    TagMapper INSTANCE = Mappers.getMapper(TagMapper.class);
+  TagMapper INSTANCE = Mappers.getMapper(TagMapper.class);
 
-    // Entity → DTO
-    TagDTO toDTO(Tag entity);
+  // Entity → DTO
+  TagDTO toDTO(Tag entity, String lang);
 
-    // DTO → Entity
-    Tag toEntity(TagDTO dto);
+  // DTO → Entity
+  Tag toEntity(TagDTO dto);
 }

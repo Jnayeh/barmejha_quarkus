@@ -2,6 +2,8 @@ package org.barmejha.domain.mappers;
 
 import org.barmejha.domain.dtos.ActivityDTO;
 import org.barmejha.domain.entities.Activity;
+import org.barmejha.domain.mappers.config.MappingConfig;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -18,11 +20,16 @@ import org.mapstruct.factory.Mappers;
     }
 )
 public interface ActivityMapper {
-    ActivityMapper INSTANCE = Mappers.getMapper(ActivityMapper.class);
+  ActivityMapper INSTANCE = Mappers.getMapper(ActivityMapper.class);
 
-    // Entity → DTO
-    ActivityDTO toDTO(Activity entity);
+  // Entity → DTO
+  ActivityDTO toDTO(Activity entity, String lang);
 
-    // DTO → Entity
-    Activity toEntity(ActivityDTO dto);
+  // DTO → Entity
+  Activity toEntity(ActivityDTO dto);
+
+  @AfterMapping
+  default void setLocalizedFields(Activity activity, ActivityDTO activityDTO, String lang) {
+  }
+
 }

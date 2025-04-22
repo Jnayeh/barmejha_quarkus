@@ -1,16 +1,19 @@
 package org.barmejha.rest;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import lombok.AllArgsConstructor;
+import org.barmejha.domain.dtos.ActivityDTO;
 import org.barmejha.domain.entities.Activity;
-import org.barmejha.rest.interfaces.IEntityResource;
+import org.barmejha.rest.interfaces.AbstractEntityResource;
 
 @Path("/activities")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @AllArgsConstructor
-public class ActivityResource extends IEntityResource<Activity> {
+@ApplicationScoped
+public class ActivityResource extends AbstractEntityResource<Activity, ActivityDTO> {
 }

@@ -12,19 +12,19 @@ import java.util.List;
 
 @Provider
 public class ResourceNotFoundExceptionMapper implements ExceptionMapper<NotFoundException> {
-    @Context
-    UriInfo uriInfo;
-    
-    @Override
-    public Response toResponse(NotFoundException ex) {
-        return Response
-                .status(Response.Status.NOT_FOUND)
-                .entity(new ErrorBody(
-                    Response.Status.NOT_FOUND.name(),
-                    ex.getMessage(),
-                    List.of(new ErrorBody.ErrorDetails(uriInfo.getPath(), ex.getMessage()))
-                ))
-                .build();
-    }
+  @Context
+  UriInfo uriInfo;
+
+  @Override
+  public Response toResponse(NotFoundException ex) {
+    return Response
+        .status(Response.Status.NOT_FOUND)
+        .entity(new ErrorBody(
+            Response.Status.NOT_FOUND.name(),
+            ex.getMessage(),
+            List.of(new ErrorBody.ErrorDetails(uriInfo.getPath(), ex.getMessage()))
+        ))
+        .build();
+  }
 }
 

@@ -4,7 +4,6 @@ import io.quarkus.logging.Log;
 import io.quarkus.panache.common.Sort;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -74,7 +73,7 @@ public class ExampleResource {
   @Tag(name = "add activity")
   @POST
   @Path("/entities/add")
-  @Transactional
+
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
 
@@ -87,11 +86,11 @@ public class ExampleResource {
 
   @POST
   @Path("/entities/pay")
-  @Transactional
+
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
 
   public Uni<List<Payment>> helloJson(Payment payment) {
-    return payment.persist().flatMap(t-> Payment.listAll());
+    return payment.persist().flatMap(t -> Payment.listAll());
   }
 }

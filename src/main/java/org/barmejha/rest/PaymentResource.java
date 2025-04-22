@@ -1,7 +1,7 @@
 package org.barmejha.rest;
 
 import io.smallrye.mutiny.Uni;
-import jakarta.transaction.Transactional;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -22,6 +22,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @AllArgsConstructor
+@ApplicationScoped
 public class PaymentResource {
 
   private final PaymentService paymentService;
@@ -38,22 +39,22 @@ public class PaymentResource {
   }
 
   @POST
-  @Transactional
+
   public Uni<Response> createPayment(Payment payment) {
     return paymentService.create(payment);
   }
 
   @PUT
   @Path("/{id}")
-  @Transactional
+
   public Uni<Payment> updatePayment(@PathParam("id") Long id, Payment updatedPayment) {
     return paymentService.update(id, updatedPayment);
   }
 
   @DELETE
   @Path("/{id}")
-  @Transactional
+
   public Uni<Boolean> deletePayment(@PathParam("id") Long id) {
-   return paymentService.delete(id);
+    return paymentService.delete(id);
   }
 }

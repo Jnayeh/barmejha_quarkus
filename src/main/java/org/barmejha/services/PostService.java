@@ -27,7 +27,7 @@ public class PostService implements IEntityService<Post, PostDTO> {
 
   @Override
   @WithSession
-  public Uni<List<PostDTO>> getAll(HttpHeaders headers, QueryRequest queryRequest) {
+  public Uni<List<PostDTO>> getAll(HttpHeaders headers) {
     return postRepository.listAll().map(this::toDTO);
   }
 

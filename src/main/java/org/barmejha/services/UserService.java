@@ -32,7 +32,7 @@ public class UserService implements IEntityService<User, UserDTO> {
 
   @Override
   @WithSession
-  public Uni<List<UserDTO>> getAll(HttpHeaders headers, QueryRequest queryRequest) {
+  public Uni<List<UserDTO>> getAll(HttpHeaders headers) {
     return userRepository.listAll().map(list -> list.stream().map(this::toDTO).toList());
   }
 

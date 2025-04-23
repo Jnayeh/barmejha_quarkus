@@ -27,7 +27,7 @@ public class CommentService implements IEntityService<Comment, CommentDTO> {
 
   @Override
   @WithSession
-  public Uni<List<CommentDTO>> getAll(HttpHeaders headers, QueryRequest queryRequest) {
+  public Uni<List<CommentDTO>> getAll(HttpHeaders headers) {
     return commentRepository.listAll().map(this::toDTO);
   }
 

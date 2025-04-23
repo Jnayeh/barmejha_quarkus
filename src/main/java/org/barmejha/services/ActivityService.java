@@ -33,14 +33,8 @@ public class ActivityService implements IEntityService<Activity, ActivityDTO> {
 
   @Override
   @WithSession
-  public Uni<List<ActivityDTO>> getAll(HttpHeaders headers, QueryRequest queryRequest) {
-    if (queryRequest == null
-        || queryRequest.getFilters().isEmpty()
-        || queryRequest.getSorts().isEmpty()
-        || queryRequest.getPagination() == null) {
+  public Uni<List<ActivityDTO>> getAll(HttpHeaders headers) {
     return activityRepository.listAll().map(this::toDTO);
-    }
-    return query(headers, queryRequest);
   }
 
   @Override

@@ -31,7 +31,7 @@ public class ScheduleService implements IEntityService<Schedule, ScheduleDTO> {
 
   @Override
   @WithSession
-  public Uni<List<ScheduleDTO>> getAll(HttpHeaders headers, QueryRequest queryRequest) {
+  public Uni<List<ScheduleDTO>> getAll(HttpHeaders headers) {
     return scheduleRepository.listAll().map(this::toDTO);
   }
 

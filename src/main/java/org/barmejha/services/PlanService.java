@@ -28,7 +28,7 @@ public class PlanService implements IEntityService<Plan, PlanDTO> {
 
   @Override
   @WithSession
-  public Uni<List<PlanDTO>> getAll(HttpHeaders headers, QueryRequest queryRequest) {
+  public Uni<List<PlanDTO>> getAll(HttpHeaders headers) {
     return planRepository.listAll().map(this::toDTO);
   }
 

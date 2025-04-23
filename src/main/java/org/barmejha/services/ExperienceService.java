@@ -27,7 +27,7 @@ public class ExperienceService implements IEntityService<Experience, ExperienceD
 
   @Override
   @WithSession
-  public Uni<List<ExperienceDTO>> getAll(HttpHeaders headers, QueryRequest queryRequest) {
+  public Uni<List<ExperienceDTO>> getAll(HttpHeaders headers) {
     return experienceRepository.listAll().map(this::toDTO);
   }
 

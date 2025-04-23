@@ -1,5 +1,7 @@
 package org.barmejha.domain.entities.users;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorType;
@@ -10,18 +12,32 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.barmejha.domain.entities.audit.AuditedEntity;
 import org.barmejha.domain.enums.UserType;
 import org.barmejha.domain.id.USID;
 
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "type"  // matches your UserType enum field
+)
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = Client.class, name = "CLIENT"),
+    @JsonSubTypes.Type(value = Admin.class, name = "ADMIN"),
+    @JsonSubTypes.Type(value = Provider.class, name = "PROVIDER")
+})
+
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Getter
 @Setter
 @Valid
@@ -42,7 +58,8 @@ public class User extends AuditedEntity {
   @Column(name = "password_hash", nullable = false)
   private String passwordHash;
 
-  @Column(name = "user_type", insertable = false, updatable = false)
+  //@Column(name = "user_type")
+  @Transient
   @Enumerated(EnumType.STRING)
   private UserType type;
 
@@ -55,4 +72,11 @@ public class User extends AuditedEntity {
 
   @Column(name = "last_name")
   private String lastName;
+
+  public UserType getType() {
+    if (this instanceof Client) return UserType.CLIENT;
+    if (this instanceof Admin) return UserType.ADMIN;
+    if (this instanceof Provider) return UserType.PROVIDER;
+    return null;
+  }
 }

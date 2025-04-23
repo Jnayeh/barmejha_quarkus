@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class QueryRequest<T> {
+public class QueryRequest {
   @Builder.Default
   private List<FilterCriteria> filters = new ArrayList<>();
 
@@ -24,25 +24,25 @@ public class QueryRequest<T> {
   private Pagination pagination;
 
   // Fluent API methods
-  public QueryRequest<T> addFilter(String field, Operator operator, Object value) {
+  public QueryRequest addFilter(String field, Operator operator, Object value) {
     return addFilter(FilterCriteria.of(field, operator, value));
   }
 
-  public QueryRequest<T> addFilter(FilterCriteria filter) {
+  public QueryRequest addFilter(FilterCriteria filter) {
     filters.add(filter);
     return this;
   }
 
-  public QueryRequest<T> addSort(String field) {
+  public QueryRequest addSort(String field) {
     return addSort(field, SortDirection.ASC);
   }
 
-  public QueryRequest<T> addSort(String field, SortDirection direction) {
+  public QueryRequest addSort(String field, SortDirection direction) {
     sorts.add(new SortCriteria(field, direction));
     return this;
   }
 
-  public QueryRequest<T> setPage(int page, int size) {
+  public QueryRequest setPage(int page, int size) {
     this.pagination = Pagination.of(page, size);
     return this;
   }

@@ -16,7 +16,7 @@ public abstract class GenericRepository<T> implements PanacheRepository<T> {
 
   public static final String SPACE = " ";
 
-  public Uni<List<T>> findByQuery(QueryRequest<T> queryRequest) {
+  public Uni<List<T>> findByQuery(QueryRequest queryRequest) {
     var queryParts = buildQuery(queryRequest);
     var query = find(queryParts.query, queryParts.params);
 
@@ -27,12 +27,12 @@ public abstract class GenericRepository<T> implements PanacheRepository<T> {
     return query.list();
   }
 
-  public Uni<Long> countByQuery(QueryRequest<T> queryRequest) {
+  public Uni<Long> countByQuery(QueryRequest queryRequest) {
     var queryParts = buildQuery(queryRequest);
     return count(queryParts.query, queryParts.params);
   }
 
-  private QueryParts buildQuery(QueryRequest<T> queryRequest) {
+  private QueryParts buildQuery(QueryRequest queryRequest) {
     var queryBuilder = new StringBuilder("FROM ").append(getEntityName());
     var params = new HashMap<String, Object>();
     var whereClauses = new ArrayList<String>();

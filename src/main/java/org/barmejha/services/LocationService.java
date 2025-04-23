@@ -27,7 +27,7 @@ public class LocationService implements IEntityService<Location, LocationDTO> {
 
   @Override
   @WithSession
-  public Uni<List<LocationDTO>> getAll(HttpHeaders headers, QueryRequest queryRequest) {
+  public Uni<List<LocationDTO>> getAll(HttpHeaders headers) {
     return locationRepository.listAll().map(this::toDTO);
   }
 

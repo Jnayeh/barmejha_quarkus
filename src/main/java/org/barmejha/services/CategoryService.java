@@ -27,7 +27,7 @@ public class CategoryService implements IEntityService<Category, CategoryDTO> {
 
   @Override
   @WithSession
-  public Uni<List<CategoryDTO>> getAll(HttpHeaders headers, QueryRequest queryRequest) {
+  public Uni<List<CategoryDTO>> getAll(HttpHeaders headers) {
     return categoryRepository.listAll().map(this::toDTO);
   }
 

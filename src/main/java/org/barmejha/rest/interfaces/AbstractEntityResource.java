@@ -28,8 +28,8 @@ public abstract class AbstractEntityResource<T, D> {
   @GET
   @NonBlocking
   public Uni<List<D>> getAll(
-      @Context HttpHeaders headers, QueryRequest queryRequest) {
-    return abstractServiceInstance.get().getAll(headers, queryRequest);
+      @Context HttpHeaders headers) {
+    return abstractServiceInstance.get().getAll(headers);
   }
 
   @POST

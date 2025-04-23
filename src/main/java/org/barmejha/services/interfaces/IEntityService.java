@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface IEntityService<E, D> {
 
-  Uni<List<D>> getAll(HttpHeaders headers, QueryRequest queryRequest);
+  Uni<List<D>> getAll(HttpHeaders headers);
 
   Uni<List<D>> query(HttpHeaders headers, QueryRequest queryRequest);
 

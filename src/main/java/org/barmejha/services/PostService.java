@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.barmejha.config.utils.HeaderHolder;
 import org.barmejha.domain.dtos.PostDTO;
 import org.barmejha.domain.entities.communities.Post;
-import org.barmejha.domain.mappers.PostMapper;
 import org.barmejha.domain.request.QueryRequest;
 import org.barmejha.repositories.PostRepository;
 import org.barmejha.services.interfaces.IEntityService;
@@ -77,6 +76,6 @@ public class PostService implements IEntityService<Post, PostDTO> {
   @Override
   public PostDTO toDTO(Post entity) {
     if (entity == null) return null;
-    return PostMapper.INSTANCE.toDTO(entity, headerHolder.getLang());
+    return PostDTO.fromEntity(entity, headerHolder.getLang());
   }
 }

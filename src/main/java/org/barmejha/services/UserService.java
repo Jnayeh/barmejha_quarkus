@@ -14,7 +14,6 @@ import org.barmejha.domain.entities.users.Admin;
 import org.barmejha.domain.entities.users.Client;
 import org.barmejha.domain.entities.users.Provider;
 import org.barmejha.domain.entities.users.User;
-import org.barmejha.domain.mappers.UserMapper;
 import org.barmejha.domain.request.QueryRequest;
 import org.barmejha.repositories.UserRepository;
 import org.barmejha.services.interfaces.IEntityService;
@@ -132,6 +131,6 @@ public class UserService implements IEntityService<User, UserDTO> {
   @Override
   public UserDTO toDTO(User entity) {
     if (entity == null) return null;
-    return UserMapper.INSTANCE.toDTO(entity, headerHolder.getLang());
+    return UserDTO.fromEntity(entity, headerHolder.getLang());
   }
 }

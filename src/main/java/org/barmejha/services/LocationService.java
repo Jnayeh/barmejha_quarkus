@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.barmejha.config.utils.HeaderHolder;
 import org.barmejha.domain.dtos.LocationDTO;
 import org.barmejha.domain.entities.Location;
-import org.barmejha.domain.mappers.LocationMapper;
 import org.barmejha.domain.request.QueryRequest;
 import org.barmejha.repositories.LocationRepository;
 import org.barmejha.services.interfaces.IEntityService;
@@ -44,13 +43,13 @@ public class LocationService implements IEntityService<Location, LocationDTO> {
   }
 
   @Override
-  @WithTransaction 
+  @WithTransaction
   public Uni<Response> create(HttpHeaders headers, Location entity) {
     return locationRepository.persist(entity).map(this::toDTO).map(ServiceUtils::createdResponse);
   }
 
   @Override
-  @WithTransaction 
+  @WithTransaction
   public Uni<Response> update(HttpHeaders headers, Long id, Location updatedEntity) {
     return locationRepository.findById(id).onItem().transform(found -> {
       found.setName(updatedEntity.getName());
@@ -62,7 +61,7 @@ public class LocationService implements IEntityService<Location, LocationDTO> {
   }
 
   @Override
-  @WithTransaction 
+  @WithTransaction
   public Uni<Response> delete(HttpHeaders headers, Long id) {
     return locationRepository.deleteById(id).map(isDeleted -> {
       if (isDeleted) return Response.noContent().build();
@@ -73,7 +72,7 @@ public class LocationService implements IEntityService<Location, LocationDTO> {
   @Override
   public LocationDTO toDTO(Location entity) {
     if (entity == null) return null;
-    return LocationMapper.INSTANCE.toDTO(entity, headerHolder.getLang());
+    return LocationDTO.fromEntity(entity, headerHolder.getLang());
   }
 
   @Override

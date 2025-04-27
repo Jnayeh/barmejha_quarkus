@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.barmejha.config.utils.HeaderHolder;
 import org.barmejha.domain.dtos.CommentDTO;
 import org.barmejha.domain.entities.communities.Comment;
-import org.barmejha.domain.mappers.CommentMapper;
 import org.barmejha.domain.request.QueryRequest;
 import org.barmejha.repositories.CommentRepository;
 import org.barmejha.services.interfaces.IEntityService;
@@ -76,6 +75,6 @@ public class CommentService implements IEntityService<Comment, CommentDTO> {
   @Override
   public CommentDTO toDTO(Comment entity) {
     if (entity == null) return null;
-    return CommentMapper.INSTANCE.toDTO(entity, headerHolder.getLang());
+    return CommentDTO.fromEntity(entity, headerHolder.getLang());
   }
 }

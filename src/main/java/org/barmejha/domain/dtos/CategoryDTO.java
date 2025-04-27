@@ -1,29 +1,33 @@
 package org.barmejha.domain.dtos;
 
-import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.barmejha.domain.dtos.utils.DTOUtils;
+import org.barmejha.domain.entities.Category;
 
+import java.util.List;
 import java.util.Set;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@Valid
-public class CategoryDTO {
+public record CategoryDTO(
+    Long id,
+    String name,
+    MediaContentDTO media,
+    String hexColor
+) {
+  public static CategoryDTO fromEntity(Category entity, String lang) {
+    if (entity == null) return null;
 
-  private Long id;
+    return new CategoryDTO(
+        entity.getId(),
+        entity.getName(),
+        MediaContentDTO.fromEntity(entity.getMedia(), lang),
+        entity.getHexColor()
+    );
+  }
 
-  private String name;
+  public static Set<CategoryDTO> mapToSetIfInitialized(Set<Category> entities, String lang) {
+    return DTOUtils.mapToSetIfInitialized(entities, e -> fromEntity(e, lang));
+  }
 
-  private MediaContentDTO media;
-
-  private String hexColor;
-
-  private Set<ActivityDTO> activities;
+  public static List<CategoryDTO> mapToListIfInitialized(List<Category> entities, String lang) {
+    return DTOUtils.mapIfInitialized(entities, e -> fromEntity(e, lang));
+  }
 }

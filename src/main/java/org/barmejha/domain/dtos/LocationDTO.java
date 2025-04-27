@@ -1,31 +1,37 @@
 package org.barmejha.domain.dtos;
 
-import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.barmejha.domain.dtos.utils.DTOUtils;
+import org.barmejha.domain.entities.Location;
 
 import java.util.List;
+import java.util.Set;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@Valid
-public class LocationDTO {
+public record LocationDTO(
+    Long id,
+    String name,
+    String address,
+    Double latitude,
+    Double longitude,
+    List<ActivityDTO> activities
+) {
+  public static LocationDTO fromEntity(Location entity, String lang) {
+    if (entity == null) return null;
 
-  private Long id;
+    return new LocationDTO(
+        entity.getId(),
+        entity.getName(),
+        entity.getAddress(),
+        entity.getLatitude(),
+        entity.getLongitude(),
+        DTOUtils.mapIfInitialized(entity.getActivities(), a -> ActivityDTO.fromEntity(a, lang))
+    );
+  }
 
-  private String name;
+  public static Set<LocationDTO> mapToSetIfInitialized(Set<Location> entities, String lang) {
+    return DTOUtils.mapToSetIfInitialized(entities, e -> fromEntity(e, lang));
+  }
 
-  private String address;
-
-  private Double latitude;
-
-  private Double longitude;
-
-  private List<ActivityDTO> activities;
+  public static List<LocationDTO> mapToListIfInitialized(List<Location> entities, String lang) {
+    return DTOUtils.mapIfInitialized(entities, e -> fromEntity(e, lang));
+  }
 }

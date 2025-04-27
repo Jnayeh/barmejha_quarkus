@@ -7,7 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.barmejha.domain.entities.communities.Comment;
+import org.barmejha.domain.dtos.utils.DTOUtils;
+import org.barmejha.domain.entities.Plan;
 import org.barmejha.domain.enums.PaymentType;
 import org.barmejha.domain.enums.PlanStatus;
 import org.barmejha.domain.enums.PlanType;
@@ -50,7 +51,7 @@ public class PlanDTO {
 
   private Set<UserDTO> participants;
 
-  private Set<Comment> comments;
+  private Set<CommentDTO> comments;
 
   @Min(1)
   @Builder.Default
@@ -58,4 +59,25 @@ public class PlanDTO {
 
   private int maxParticipants;
 
+  public static PlanDTO fromEntity(Plan entity, String lang) {
+    if (entity == null) return null;
+
+    return new PlanDTO(
+        entity.getId(),
+        ScheduleDTO.fromEntity(entity.getSchedule(), lang),
+        UserDTO.fromEntity(entity.getClient(), lang),
+        entity.getStartTime(),
+        entity.getEndTime(),
+        entity.getStatus(),
+        entity.getFinalPrice(),
+        entity.getType(),
+        entity.getPaymentType(),
+        entity.getTitle(),
+        entity.getDescription(),
+        DTOUtils.mapToSetIfInitialized(entity.getParticipants(), p -> UserDTO.fromEntity(p, lang)),
+        DTOUtils.mapToSetIfInitialized(entity.getComments(), c -> CommentDTO.fromEntity(c, lang)),
+        entity.getMinParticipants(),
+        entity.getMaxParticipants()
+    );
+  }
 }

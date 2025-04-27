@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.barmejha.config.utils.HeaderHolder;
 import org.barmejha.domain.dtos.CategoryDTO;
 import org.barmejha.domain.entities.Category;
-import org.barmejha.domain.mappers.CategoryMapper;
 import org.barmejha.domain.request.QueryRequest;
 import org.barmejha.repositories.CategoryRepository;
 import org.barmejha.services.interfaces.IEntityService;
@@ -77,6 +76,6 @@ public class CategoryService implements IEntityService<Category, CategoryDTO> {
   @Override
   public CategoryDTO toDTO(Category entity) {
     if (entity == null) return null;
-    return CategoryMapper.INSTANCE.toDTO(entity, headerHolder.getLang());
+    return CategoryDTO.fromEntity(entity, headerHolder.getLang());
   }
 }

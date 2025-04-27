@@ -12,10 +12,8 @@ import org.barmejha.config.utils.HeaderHolder;
 import org.barmejha.domain.dtos.ActivityDTO;
 import org.barmejha.domain.entities.Activity;
 import org.barmejha.domain.exceptions.ErrorBody;
-import org.barmejha.domain.mappers.ActivityMapper;
 import org.barmejha.domain.request.QueryRequest;
 import org.barmejha.repositories.ActivityRepository;
-import org.barmejha.repositories.LocationRepository;
 import org.barmejha.services.interfaces.IEntityService;
 import org.barmejha.services.utils.ServiceUtils;
 
@@ -27,9 +25,9 @@ import static org.barmejha.domain.exceptions.ResException.internalServerFailure;
 @RequiredArgsConstructor
 public class ActivityService implements IEntityService<Activity, ActivityDTO> {
 
-  private final ActivityRepository activityRepository;
-  private final LocationRepository locationRepository;
   private final HeaderHolder headerHolder;
+  private final ActivityRepository activityRepository;
+  private final LocationService locationService;
 
   @Override
   @WithSession
@@ -52,7 +50,7 @@ public class ActivityService implements IEntityService<Activity, ActivityDTO> {
   @Override
   @WithTransaction
   public Uni<Response> create(HttpHeaders headers, Activity activity) {
-    return locationRepository.persist(activity.getLocation())
+    return locationService.create(headers, activity.getLocation())
         .flatMap(location -> activityRepository.persist(activity))
         .onItem().transform(ServiceUtils::createdResponse)
         .onFailure().transform(WebApplicationException::new);
@@ -81,7 +79,7 @@ public class ActivityService implements IEntityService<Activity, ActivityDTO> {
   @WithSession
   public Uni<Response> delete(HttpHeaders headers, Long id) {
     return activityRepository.deleteById(id).map(isDeleted -> {
-      if (isDeleted) return Response.status(204).build();
+      if (Boolean.TRUE.equals(isDeleted)) return Response.status(204).build();
       return Response.status(404).build();
     });
   }
@@ -89,7 +87,7 @@ public class ActivityService implements IEntityService<Activity, ActivityDTO> {
   @Override
   public ActivityDTO toDTO(Activity entity) {
     if (entity == null) return null;
-    return ActivityMapper.INSTANCE.toDTO(entity, headerHolder.getLang());
+    return ActivityDTO.fromEntity(entity, headerHolder.getLang());
   }
 
   @Override

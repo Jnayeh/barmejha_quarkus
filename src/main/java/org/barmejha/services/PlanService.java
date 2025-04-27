@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.barmejha.config.utils.HeaderHolder;
 import org.barmejha.domain.dtos.PlanDTO;
 import org.barmejha.domain.entities.Plan;
-import org.barmejha.domain.mappers.PlanMapper;
 import org.barmejha.domain.request.QueryRequest;
 import org.barmejha.repositories.PlanRepository;
 import org.barmejha.services.interfaces.IEntityService;
@@ -87,6 +86,6 @@ public class PlanService implements IEntityService<Plan, PlanDTO> {
   @Override
   public PlanDTO toDTO(Plan entity) {
     if (entity == null) return null;
-    return PlanMapper.INSTANCE.toDTO(entity, headerHolder.getLang());
+    return PlanDTO.fromEntity(entity, headerHolder.getLang());
   }
 }

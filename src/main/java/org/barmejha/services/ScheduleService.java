@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.barmejha.config.utils.HeaderHolder;
 import org.barmejha.domain.dtos.ScheduleDTO;
 import org.barmejha.domain.entities.Schedule;
-import org.barmejha.domain.mappers.ScheduleMapper;
 import org.barmejha.domain.request.QueryRequest;
 import org.barmejha.repositories.ScheduleRepository;
 import org.barmejha.services.interfaces.IEntityService;
@@ -48,13 +47,13 @@ public class ScheduleService implements IEntityService<Schedule, ScheduleDTO> {
   }
 
   @Override
-  @WithTransaction 
+  @WithTransaction
   public Uni<Response> create(HttpHeaders headers, Schedule entity) {
     return scheduleRepository.persist(entity).map(this::toDTO).map(ServiceUtils::createdResponse);
   }
 
   @Override
-  @WithTransaction 
+  @WithTransaction
   public Uni<Response> update(HttpHeaders headers, Long id, Schedule updatedEntity) {
     return scheduleRepository.findById(id).onItem().transform(found -> {
       found.setStartDate(updatedEntity.getStartDate());
@@ -70,7 +69,7 @@ public class ScheduleService implements IEntityService<Schedule, ScheduleDTO> {
   }
 
   @Override
-  @WithTransaction 
+  @WithTransaction
   public Uni<Response> delete(HttpHeaders headers, Long id) {
     return scheduleRepository.deleteById(id).map(isDeleted -> {
       if (isDeleted) return Response.status(204).build();
@@ -87,6 +86,6 @@ public class ScheduleService implements IEntityService<Schedule, ScheduleDTO> {
   @Override
   public ScheduleDTO toDTO(Schedule entity) {
     if (entity == null) return null;
-    return ScheduleMapper.INSTANCE.toDTO(entity, headerHolder.getLang());
+    return ScheduleDTO.fromEntity(entity, headerHolder.getLang());
   }
 }

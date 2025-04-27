@@ -1,24 +1,32 @@
 package org.barmejha.domain.dtos;
 
-import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.barmejha.domain.dtos.utils.DTOUtils;
+import org.barmejha.domain.entities.Tag;
 import org.barmejha.domain.enums.TagType;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@Valid
-public class TagDTO {
+import java.util.List;
+import java.util.Set;
 
-  private Long id;
+public record TagDTO(
+    Long id,
+    String name,
+    TagType type
+) {
+  public static TagDTO fromEntity(Tag entity, String lang) {
+    if (entity == null) return null;
 
-  private String name;
+    return new TagDTO(
+        entity.getId(),
+        entity.getName(),
+        entity.getType()
+    );
+  }
 
-  private TagType type;
+  public static Set<TagDTO> mapToSetIfInitialized(Set<Tag> entities, String lang) {
+    return DTOUtils.mapToSetIfInitialized(entities, e -> fromEntity(e, lang));
+  }
+
+  public static List<TagDTO> mapToListIfInitialized(List<Tag> entities, String lang) {
+    return DTOUtils.mapIfInitialized(entities, e -> fromEntity(e, lang));
+  }
 }

@@ -1,23 +1,29 @@
 package org.barmejha.domain.dtos;
 
-import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.barmejha.domain.entities.media.MediaContent;
 import org.barmejha.domain.enums.MediaType;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@Valid
-public class MediaContentDTO {
-  private Long id;
+import java.util.List;
 
-  private String url;
+public record MediaContentDTO(
+    Long id,
+    String url,
+    MediaType type
+) {
+  public static MediaContentDTO fromEntity(MediaContent entity, String lang) {
+    if (entity == null) return null;
 
-  private MediaType type;
+    return new MediaContentDTO(
+        entity.getId(),
+        entity.getUrl(),
+        entity.getType()
+    );
+  }
+
+  public static List<MediaContentDTO> fromEntities(List<MediaContent> entities, String lang) {
+    if (entities == null) return List.of();
+    return entities.stream()
+        .map(entity -> fromEntity(entity, lang))
+        .toList();
+  }
 }

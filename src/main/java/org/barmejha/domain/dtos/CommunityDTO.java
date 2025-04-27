@@ -1,28 +1,34 @@
 package org.barmejha.domain.dtos;
 
-import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.barmejha.domain.dtos.utils.DTOUtils;
+import org.barmejha.domain.entities.communities.Community;
 
 import java.util.List;
+import java.util.Set;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@Valid
-public class CommunityDTO {
+public record CommunityDTO(
+    Long id,
+    String name,
+    String description,
+    List<PostDTO> posts
+) {
+  public static CommunityDTO fromEntity(Community entity, String lang) {
+    if (entity == null) return null;
 
-  private Long id;
+    return new CommunityDTO(
+        entity.getId(),
+        entity.getName(),
+        entity.getDescription(),
+        DTOUtils.mapIfInitialized(entity.getPosts(), p -> PostDTO.fromEntity(p, lang))
+    );
+  }
 
-  private String name;
+  public static Set<CommunityDTO> mapToSetIfInitialized(Set<Community> entities, String lang) {
+    return DTOUtils.mapToSetIfInitialized(entities, e -> fromEntity(e, lang));
+  }
 
-  private String description;
-
-  private List<PostDTO> posts;
+  public static List<CommunityDTO> mapToListIfInitialized(List<Community> entities, String lang) {
+    return DTOUtils.mapIfInitialized(entities, e -> fromEntity(e, lang));
+  }
 }
 

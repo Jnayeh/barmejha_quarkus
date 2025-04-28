@@ -8,7 +8,9 @@ import lombok.Value;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -20,6 +22,9 @@ public class QueryRequest {
 
   @Builder.Default
   private List<SortCriteria> sorts = new ArrayList<>();
+
+  @Builder.Default
+  private List<String> joins = new ArrayList<>();
 
   private Pagination pagination;
 

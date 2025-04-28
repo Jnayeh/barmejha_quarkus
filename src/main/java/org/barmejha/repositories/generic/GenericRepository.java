@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.barmejha.domain.request.QueryRequest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ public abstract class GenericRepository<T> implements PanacheRepository<T> {
 
   public Uni<List<T>> findByQuery(QueryRequest queryRequest) {
     var queryParts = buildQuery(queryRequest);
+    log.info("Query: {}", queryParts.query);
     var query = find(queryParts.query, queryParts.params);
 
     if (queryRequest.getPagination() != null) {
@@ -36,6 +38,11 @@ public abstract class GenericRepository<T> implements PanacheRepository<T> {
     var queryBuilder = new StringBuilder("FROM ").append(getEntityName());
     var params = new HashMap<String, Object>();
     var whereClauses = new ArrayList<String>();
+
+    // Process fetch joins
+    for (var joinPath : queryRequest.getJoins()) {
+      queryBuilder.append(" ").append(buildFetchJoinQuery(joinPath));
+    }
 
     // Process filters
     for (var filter : queryRequest.getFilters()) {
@@ -57,6 +64,13 @@ public abstract class GenericRepository<T> implements PanacheRepository<T> {
     }
 
     return new QueryParts(queryBuilder.toString(), params);
+  }
+
+
+  protected String buildFetchJoinQuery(String... joinPaths) {
+    return Arrays.stream(joinPaths)
+        .map(path -> "LEFT JOIN FETCH e." + path)
+        .collect(Collectors.joining(" "));
   }
 
   private String buildWhereClause(QueryRequest.FilterCriteria filter, Map<String, Object> params) {

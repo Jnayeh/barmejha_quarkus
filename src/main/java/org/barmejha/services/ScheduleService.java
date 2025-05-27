@@ -15,7 +15,10 @@ import org.barmejha.repositories.ScheduleRepository;
 import org.barmejha.services.interfaces.IEntityService;
 import org.barmejha.services.utils.ServiceUtils;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -31,12 +34,13 @@ public class ScheduleService implements IEntityService<Schedule, ScheduleDTO> {
   @Override
   @WithSession
   public Uni<List<ScheduleDTO>> getAll(HttpHeaders headers) {
-    return scheduleRepository.listAll().map(this::toDTO);
+    return query(headers, QueryRequest.builder().build());
   }
 
   @Override
   @WithSession
   public Uni<List<ScheduleDTO>> query(HttpHeaders headers, QueryRequest queryRequest) {
+    queryRequest.setJoins(new ArrayList<>(initJoins(queryRequest)));
     return scheduleRepository.findByQuery(queryRequest).map(this::toDTO);
   }
 
@@ -87,5 +91,14 @@ public class ScheduleService implements IEntityService<Schedule, ScheduleDTO> {
   public ScheduleDTO toDTO(Schedule entity) {
     if (entity == null) return null;
     return ScheduleDTO.fromEntity(entity, headerHolder.getLang());
+  }
+
+    public Set<String> initJoins(QueryRequest queryRequest) {
+    HashSet<String> joins = new HashSet<>(Set.of("activity"));
+    if (queryRequest.getJoins() == null) {
+      return joins;
+    }
+    joins.addAll(queryRequest.getJoins());
+    return joins;
   }
 }

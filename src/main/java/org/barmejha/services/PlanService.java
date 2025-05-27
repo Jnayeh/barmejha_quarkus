@@ -15,7 +15,10 @@ import org.barmejha.repositories.PlanRepository;
 import org.barmejha.services.interfaces.IEntityService;
 import org.barmejha.services.utils.ServiceUtils;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -28,12 +31,13 @@ public class PlanService implements IEntityService<Plan, PlanDTO> {
   @Override
   @WithSession
   public Uni<List<PlanDTO>> getAll(HttpHeaders headers) {
-    return planRepository.listAll().map(this::toDTO);
+    return query(headers, QueryRequest.builder().build());
   }
 
   @Override
   @WithSession
   public Uni<List<PlanDTO>> query(HttpHeaders headers, QueryRequest queryRequest) {
+    queryRequest.setJoins(new ArrayList<>(initJoins(queryRequest)));
     return planRepository.findByQuery(queryRequest).map(this::toDTO);
   }
 
@@ -87,5 +91,14 @@ public class PlanService implements IEntityService<Plan, PlanDTO> {
   public PlanDTO toDTO(Plan entity) {
     if (entity == null) return null;
     return PlanDTO.fromEntity(entity, headerHolder.getLang());
+  }
+
+    public Set<String> initJoins(QueryRequest queryRequest) {
+    HashSet<String> joins = new HashSet<>(Set.of("schedule", "client"));
+    if (queryRequest.getJoins() == null) {
+      return joins;
+    }
+    joins.addAll(queryRequest.getJoins());
+    return joins;
   }
 }

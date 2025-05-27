@@ -3,6 +3,8 @@ package org.barmejha.services.interfaces;
 import io.smallrye.mutiny.Uni;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
+import org.barmejha.domain.dtos.UserDTO;
+import org.barmejha.domain.entities.users.User;
 import org.barmejha.domain.request.QueryRequest;
 
 import java.util.ArrayList;

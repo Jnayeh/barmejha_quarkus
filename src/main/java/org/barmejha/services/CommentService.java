@@ -15,7 +15,10 @@ import org.barmejha.repositories.CommentRepository;
 import org.barmejha.services.interfaces.IEntityService;
 import org.barmejha.services.utils.ServiceUtils;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -27,12 +30,13 @@ public class CommentService implements IEntityService<Comment, CommentDTO> {
   @Override
   @WithSession
   public Uni<List<CommentDTO>> getAll(HttpHeaders headers) {
-    return commentRepository.listAll().map(this::toDTO);
+    return query(headers, QueryRequest.builder().build());
   }
 
   @Override
   @WithSession
   public Uni<List<CommentDTO>> query(HttpHeaders headers, QueryRequest queryRequest) {
+    queryRequest.setJoins(new ArrayList<>(initJoins(queryRequest)));
     return commentRepository.findByQuery(queryRequest).map(this::toDTO);
   }
 
@@ -76,5 +80,14 @@ public class CommentService implements IEntityService<Comment, CommentDTO> {
   public CommentDTO toDTO(Comment entity) {
     if (entity == null) return null;
     return CommentDTO.fromEntity(entity, headerHolder.getLang());
+  }
+
+    public Set<String> initJoins(QueryRequest queryRequest) {
+    HashSet<String> joins = new HashSet<>(Set.of("post", "plan", "author"));
+    if (queryRequest.getJoins() == null) {
+      return joins;
+    }
+    joins.addAll(queryRequest.getJoins());
+    return joins;
   }
 }

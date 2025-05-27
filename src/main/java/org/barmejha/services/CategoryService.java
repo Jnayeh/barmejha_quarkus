@@ -15,7 +15,10 @@ import org.barmejha.repositories.CategoryRepository;
 import org.barmejha.services.interfaces.IEntityService;
 import org.barmejha.services.utils.ServiceUtils;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -27,12 +30,13 @@ public class CategoryService implements IEntityService<Category, CategoryDTO> {
   @Override
   @WithSession
   public Uni<List<CategoryDTO>> getAll(HttpHeaders headers) {
-    return categoryRepository.listAll().map(this::toDTO);
+    return query(headers, QueryRequest.builder().build());
   }
 
   @Override
   @WithSession
   public Uni<List<CategoryDTO>> query(HttpHeaders headers, QueryRequest queryRequest) {
+    queryRequest.setJoins(new ArrayList<>(initJoins(queryRequest)));
     return categoryRepository.findByQuery(queryRequest).map(this::toDTO);
   }
 
@@ -77,5 +81,14 @@ public class CategoryService implements IEntityService<Category, CategoryDTO> {
   public CategoryDTO toDTO(Category entity) {
     if (entity == null) return null;
     return CategoryDTO.fromEntity(entity, headerHolder.getLang());
+  }
+
+    public Set<String> initJoins(QueryRequest queryRequest) {
+    HashSet<String> joins = new HashSet<>(Set.of("media"));
+    if (queryRequest.getJoins() == null) {
+      return joins;
+    }
+    joins.addAll(queryRequest.getJoins());
+    return joins;
   }
 }

@@ -15,7 +15,10 @@ import org.barmejha.repositories.LocationRepository;
 import org.barmejha.services.interfaces.IEntityService;
 import org.barmejha.services.utils.ServiceUtils;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -27,7 +30,7 @@ public class LocationService implements IEntityService<Location, LocationDTO> {
   @Override
   @WithSession
   public Uni<List<LocationDTO>> getAll(HttpHeaders headers) {
-    return locationRepository.listAll().map(this::toDTO);
+    return query(headers, QueryRequest.builder().build());
   }
 
   @Override
@@ -79,5 +82,14 @@ public class LocationService implements IEntityService<Location, LocationDTO> {
   @WithSession
   public Uni<Long> count(HttpHeaders headers, QueryRequest request) {
     return locationRepository.countByQuery(request);
+  }
+
+  public Set<String> initJoins(QueryRequest queryRequest) {
+    HashSet<String> joins = new HashSet<>(Set.of());
+    if (queryRequest.getJoins() == null) {
+      return joins;
+    }
+    joins.addAll(queryRequest.getJoins());
+    return joins;
   }
 }

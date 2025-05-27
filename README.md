@@ -65,12 +65,6 @@ If you want to learn more about building native executables, please consult <htt
 
 ## Provided Code
 
-### gRPC
-
-Create your first gRPC service
-
-[Related guide section...](https://quarkus.io/guides/grpc-getting-started)
-
 ### Hibernate ORM
 
 Create your first JPA entity
@@ -79,16 +73,33 @@ Create your first JPA entity
 
 [Related Hibernate with Panache section...](https://quarkus.io/guides/hibernate-orm-panache)
 
-
-### REST Data with Panache
-
-Generating Jakarta REST resources with Panache
-
-[Related guide section...](https://quarkus.io/guides/rest-data-panache)
-
-
 ### REST
 
 Easily start your REST Web Services
 
 [Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+
+### GENERIC REST CONTROLLER Pattern
+
+This project uses a generic REST controller pattern
+to handle CRUD operations for all entities
+and reduce boilerplate code.
+
+### Programmatic Relationship joins
+
+This project uses a programmatic relationship joining based on the entity fields.
+
+### Reactive PostgreSQL + Panache
+
+This project uses the reactive PostgreSQL client with Panache
+to handle database operations using non-blocking I/O.
+
+### Flyway
+
+This project uses Flyway to manage database migrations.
+
+### OpenAPI
+This project uses OpenAPI to generate API documentation
+
+### Record DTOs
+This project uses Java records as DTOs for better readability and maintainability.

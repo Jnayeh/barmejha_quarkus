@@ -15,7 +15,10 @@ import org.barmejha.repositories.ExperienceRepository;
 import org.barmejha.services.interfaces.IEntityService;
 import org.barmejha.services.utils.ServiceUtils;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -27,12 +30,13 @@ public class ExperienceService implements IEntityService<Experience, ExperienceD
   @Override
   @WithSession
   public Uni<List<ExperienceDTO>> getAll(HttpHeaders headers) {
-    return experienceRepository.listAll().map(this::toDTO);
+    return query(headers, QueryRequest.builder().build());
   }
 
   @Override
   @WithSession
   public Uni<List<ExperienceDTO>> query(HttpHeaders headers, QueryRequest queryRequest) {
+    queryRequest.setJoins(new ArrayList<>(initJoins(queryRequest)));
     return experienceRepository.findByQuery(queryRequest).map(this::toDTO);
   }
 
@@ -78,5 +82,14 @@ public class ExperienceService implements IEntityService<Experience, ExperienceD
   public ExperienceDTO toDTO(Experience entity) {
     if (entity == null) return null;
     return ExperienceDTO.fromEntity(entity, headerHolder.getLang());
+  }
+
+    public Set<String> initJoins(QueryRequest queryRequest) {
+    HashSet<String> joins = new HashSet<>(Set.of("activity", "client"));
+    if (queryRequest.getJoins() == null) {
+      return joins;
+    }
+    joins.addAll(queryRequest.getJoins());
+    return joins;
   }
 }

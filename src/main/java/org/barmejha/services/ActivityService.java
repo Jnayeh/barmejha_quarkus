@@ -8,6 +8,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.barmejha.config.utils.HeaderHolder;
 import org.barmejha.domain.dtos.ActivityDTO;
 import org.barmejha.domain.entities.Activity;
@@ -17,10 +18,14 @@ import org.barmejha.repositories.ActivityRepository;
 import org.barmejha.services.interfaces.IEntityService;
 import org.barmejha.services.utils.ServiceUtils;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.barmejha.domain.exceptions.ResException.internalServerFailure;
 
+@Slf4j
 @ApplicationScoped
 @RequiredArgsConstructor
 public class ActivityService implements IEntityService<Activity, ActivityDTO> {
@@ -32,12 +37,13 @@ public class ActivityService implements IEntityService<Activity, ActivityDTO> {
   @Override
   @WithSession
   public Uni<List<ActivityDTO>> getAll(HttpHeaders headers) {
-    return activityRepository.listAll().map(this::toDTO);
+    return query(headers, QueryRequest.builder().build());
   }
 
   @Override
   @WithSession
   public Uni<List<ActivityDTO>> query(HttpHeaders headers, QueryRequest queryRequest) {
+    queryRequest.setJoins(new ArrayList<>(initJoins(queryRequest)));
     return activityRepository.findByQuery(queryRequest).map(this::toDTO);
   }
 
@@ -50,10 +56,12 @@ public class ActivityService implements IEntityService<Activity, ActivityDTO> {
   @Override
   @WithTransaction
   public Uni<Response> create(HttpHeaders headers, Activity activity) {
-    return locationService.create(headers, activity.getLocation())
-        .flatMap(location -> activityRepository.persist(activity))
+    return activityRepository.persist(activity)
         .onItem().transform(ServiceUtils::createdResponse)
-        .onFailure().transform(WebApplicationException::new);
+        .onFailure().transform(throwable -> {
+          log.error("Error creating activity: {}", throwable.getMessage(), throwable);
+          throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ErrorBody.builder().message(throwable.getMessage()).build()).build());
+        });
   }
 
   @Override
@@ -94,5 +102,15 @@ public class ActivityService implements IEntityService<Activity, ActivityDTO> {
   @WithSession
   public Uni<Long> count(HttpHeaders headers, QueryRequest request) {
     return activityRepository.countByQuery(request);
+  }
+
+
+  public Set<String> initJoins(QueryRequest queryRequest) {
+    HashSet<String> joins = new HashSet<>(Set.of("location", "provider"));
+    if (queryRequest.getJoins() == null) {
+      return joins;
+    }
+    joins.addAll(queryRequest.getJoins());
+    return joins;
   }
 }

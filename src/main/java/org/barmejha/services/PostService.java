@@ -15,7 +15,10 @@ import org.barmejha.repositories.PostRepository;
 import org.barmejha.services.interfaces.IEntityService;
 import org.barmejha.services.utils.ServiceUtils;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -27,12 +30,13 @@ public class PostService implements IEntityService<Post, PostDTO> {
   @Override
   @WithSession
   public Uni<List<PostDTO>> getAll(HttpHeaders headers) {
-    return postRepository.listAll().map(this::toDTO);
+    return query(headers, QueryRequest.builder().build());
   }
 
   @Override
   @WithSession
   public Uni<List<PostDTO>> query(HttpHeaders headers, QueryRequest queryRequest) {
+    queryRequest.setJoins(new ArrayList<>(initJoins(queryRequest)));
     return postRepository.findByQuery(queryRequest).map(this::toDTO);
   }
 
@@ -77,5 +81,14 @@ public class PostService implements IEntityService<Post, PostDTO> {
   public PostDTO toDTO(Post entity) {
     if (entity == null) return null;
     return PostDTO.fromEntity(entity, headerHolder.getLang());
+  }
+
+    public Set<String> initJoins(QueryRequest queryRequest) {
+    HashSet<String> joins = new HashSet<>(Set.of("community", "author"));
+    if (queryRequest.getJoins() == null) {
+      return joins;
+    }
+    joins.addAll(queryRequest.getJoins());
+    return joins;
   }
 }

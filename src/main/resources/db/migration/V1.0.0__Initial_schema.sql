@@ -1,369 +1,339 @@
-create table activities
+-- Create sequences with custom start values and increments
+CREATE SEQUENCE activities_id_seq START WITH 1696658400 INCREMENT BY 7;
+CREATE SEQUENCE categories_id_seq START WITH 1696658400 INCREMENT BY 7;
+CREATE SEQUENCE comments_id_seq START WITH 1696658400 INCREMENT BY 7;
+CREATE SEQUENCE communities_id_seq START WITH 1696658400 INCREMENT BY 7;
+CREATE SEQUENCE experiences_id_seq START WITH 1696658400 INCREMENT BY 7;
+CREATE SEQUENCE locations_id_seq START WITH 1696658400 INCREMENT BY 7;
+CREATE SEQUENCE media_content_id_seq START WITH 1696658400 INCREMENT BY 7;
+CREATE SEQUENCE plans_id_seq START WITH 1696658400 INCREMENT BY 7;
+CREATE SEQUENCE posts_id_seq START WITH 1696658400 INCREMENT BY 7;
+CREATE SEQUENCE schedules_id_seq START WITH 1696658400 INCREMENT BY 7;
+CREATE SEQUENCE tags_id_seq START WITH 1696658400 INCREMENT BY 7;
+CREATE SEQUENCE users_id_seq START WITH 1696658400 INCREMENT BY 7;
+
+-- Activities table
+CREATE TABLE activities
 (
-    id             bigint                      not null,
-    created_at     timestamp(6) with time zone not null,
-    created_by     varchar(255),
-    updated_at     timestamp(6) with time zone,
-    updated_by     varchar(255),
-    base_price     numeric(38, 2)              not null,
-    description    varchar(1000),
-    discount_price numeric(38, 2),
-    duration       integer                     not null,
-    name           varchar(255)                not null,
-    location_id    bigint,
-    provider_id    bigint,
-    primary key (id)
+    id             BIGINT PRIMARY KEY DEFAULT nextval('activities_id_seq'),
+    name           VARCHAR(255)             NOT NULL,
+    description    VARCHAR(1000),
+    base_price     NUMERIC(38, 2)           NOT NULL,
+    discount_price NUMERIC(38, 2),
+    duration       INTEGER                  NOT NULL,
+    location_id    BIGINT,
+    provider_id    BIGINT,
+    created_at     TIMESTAMP WITH TIME ZONE NOT NULL,
+    updated_at     TIMESTAMP WITH TIME ZONE,
+    created_by     VARCHAR(255),
+    updated_by     VARCHAR(255)
 );
 
-create table activity_categories
+-- Activity categories junction table
+CREATE TABLE activity_categories
 (
-    activities_id bigint not null,
-    categories_id bigint not null,
-    primary key (activities_id, categories_id)
+    activities_id BIGINT NOT NULL,
+    categories_id BIGINT NOT NULL,
+    PRIMARY KEY (activities_id, categories_id)
 );
 
-create table activity_tags
+-- Activity tags junction table
+CREATE TABLE activity_tags
 (
-    activities_id bigint not null,
-    tags_id       bigint not null,
-    primary key (activities_id, tags_id)
+    activities_id BIGINT NOT NULL,
+    tags_id       BIGINT NOT NULL,
+    PRIMARY KEY (activities_id, tags_id)
 );
 
-create table categories
+-- Categories table
+CREATE TABLE categories
 (
-    id          bigint                      not null,
-    created_at  timestamp(6) with time zone not null,
-    created_by  varchar(255),
-    updated_at  timestamp(6) with time zone,
-    updated_by  varchar(255),
-    hex_color   varchar(7),
-    name        varchar(255)                not null,
-    category_id bigint                      not null,
-    primary key (id)
+    id         BIGINT PRIMARY KEY DEFAULT nextval('categories_id_seq'),
+    name       VARCHAR(255)             NOT NULL UNIQUE,
+    hex_color  VARCHAR(7),
+    media_id   BIGINT UNIQUE,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE,
+    created_by VARCHAR(255),
+    updated_by VARCHAR(255)
 );
 
-create table client_preferences
+-- Client preferences table
+CREATE TABLE client_preferences
 (
-    Client_id       bigint not null,
-    preferredTagIds bigint
+    Client_id       BIGINT NOT NULL,
+    preferredTagIds BIGINT
 );
 
-create table comments
+-- Comments table
+CREATE TABLE comments
 (
-    id         bigint                      not null,
-    created_at timestamp(6) with time zone not null,
-    created_by varchar(255),
-    updated_at timestamp(6) with time zone,
-    updated_by varchar(255),
+    id         BIGINT PRIMARY KEY DEFAULT nextval('comments_id_seq'),
     content    TEXT,
-    author_id  bigint                      not null,
-    plan_id    bigint,
-    post_id    bigint,
-    primary key (id)
+    author_id  BIGINT                   NOT NULL,
+    plan_id    BIGINT,
+    post_id    BIGINT,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE,
+    created_by VARCHAR(255),
+    updated_by VARCHAR(255)
 );
 
-create table communities
+-- Communities table
+CREATE TABLE communities
 (
-    id          bigint                      not null,
-    created_at  timestamp(6) with time zone not null,
-    created_by  varchar(255),
-    updated_at  timestamp(6) with time zone,
-    updated_by  varchar(255),
-    description varchar(255),
-    name        varchar(255)                not null,
-    primary key (id)
+    id          BIGINT PRIMARY KEY DEFAULT nextval('communities_id_seq'),
+    name        VARCHAR(255)             NOT NULL UNIQUE,
+    description VARCHAR(255),
+    created_at  TIMESTAMP WITH TIME ZONE NOT NULL,
+    updated_at  TIMESTAMP WITH TIME ZONE,
+    created_by  VARCHAR(255),
+    updated_by  VARCHAR(255)
 );
 
-create table experiences
+-- Experiences table
+CREATE TABLE experiences
 (
-    id          bigint                      not null,
-    created_at  timestamp(6) with time zone not null,
-    created_by  varchar(255),
-    updated_at  timestamp(6) with time zone,
-    updated_by  varchar(255),
-    rating      integer                     not null,
-    review      varchar(255),
-    activity_id bigint                      not null,
-    client_id   bigint                      not null,
-    primary key (id)
+    id          BIGINT PRIMARY KEY DEFAULT nextval('experiences_id_seq'),
+    activity_id BIGINT                   NOT NULL,
+    client_id   BIGINT                   NOT NULL,
+    rating      INTEGER                  NOT NULL,
+    review      VARCHAR(255),
+    created_at  TIMESTAMP WITH TIME ZONE NOT NULL,
+    updated_at  TIMESTAMP WITH TIME ZONE,
+    created_by  VARCHAR(255),
+    updated_by  VARCHAR(255)
 );
 
-create table locations
+-- Locations table
+CREATE TABLE locations
 (
-    id         bigint                      not null,
-    created_at timestamp(6) with time zone not null,
-    created_by varchar(255),
-    updated_at timestamp(6) with time zone,
-    updated_by varchar(255),
-    address    varchar(255)                not null,
-    latitude   float(53)                   not null,
-    longitude  float(53)                   not null,
-    name       varchar(255)                not null,
-    primary key (id)
+    id         BIGINT PRIMARY KEY DEFAULT nextval('locations_id_seq'),
+    name       VARCHAR(255)             NOT NULL,
+    address    VARCHAR(255)             NOT NULL,
+    latitude   FLOAT                    NOT NULL,
+    longitude  FLOAT                    NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE,
+    created_by VARCHAR(255),
+    updated_by VARCHAR(255)
 );
 
-create table media_content
+-- Media content table
+CREATE TABLE media_content
 (
-    id            bigint                      not null,
-    created_at    timestamp(6) with time zone not null,
-    created_by    varchar(255),
-    updated_at    timestamp(6) with time zone,
-    updated_by    varchar(255),
-    type          varchar(15) check (type in ('IMAGE', 'VIDEO', 'YOUTUBE', 'VIMEO')),
+    id            BIGINT PRIMARY KEY DEFAULT nextval('media_content_id_seq'),
     url           TEXT,
-    activity_id   bigint,
-    experience_id bigint                      not null,
-    primary key (id)
+    type          VARCHAR(255) CHECK (type IN ('IMAGE', 'VIDEO', 'YOUTUBE', 'VIMEO')),
+    activity_id   BIGINT,
+    experience_id BIGINT                   NOT NULL,
+    created_at    TIMESTAMP WITH TIME ZONE NOT NULL,
+    updated_at    TIMESTAMP WITH TIME ZONE,
+    created_by    VARCHAR(255),
+    updated_by    VARCHAR(255)
 );
 
-create table payments
+-- Payments table
+CREATE TABLE payments
 (
-    id             varchar(255)                not null,
-    amount         numeric(38, 2)              not null,
-    currency       varchar(255),
-    processed_at   timestamp(6) with time zone not null,
-    status         varchar(15)                not null check (status in ('PENDING', 'SUCCEEDED', 'FAILED', 'REFUNDED')),
-    transaction_id varchar(255),
-    plan_id        bigint,
-    primary key (id)
+    id             VARCHAR(255) PRIMARY KEY,
+    amount         NUMERIC(38, 2)           NOT NULL,
+    currency       VARCHAR(255),
+    status         VARCHAR(255)             NOT NULL CHECK (status IN ('PENDING', 'SUCCEEDED', 'FAILED', 'REFUNDED')),
+    transaction_id VARCHAR(255) UNIQUE,
+    plan_id        BIGINT UNIQUE,
+    processed_at   TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
-create table plans
+-- Plans table
+CREATE TABLE plans
 (
-    id               bigint                      not null,
-    created_at       timestamp(6) with time zone not null,
-    created_by       varchar(255),
-    updated_at       timestamp(6) with time zone,
-    updated_by       varchar(255),
-    description      varchar(1000),
-    end_time         timestamp(6)                not null,
-    final_price      numeric(38, 2)              not null,
-    max_participants integer,
-    min_participants integer                     not null,
-    payment_type     smallint check (payment_type between 0 and 1),
-    start_time       timestamp(6)                not null,
-    status           varchar(15)                not null check (status in ('PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED')),
-    title            varchar(255),
-    type             varchar(7) check (type in ('PRIVATE', 'PUBLIC')),
-    client_id        bigint                      not null,
-    schedule_id      bigint                      not null,
-    primary key (id)
+    id               BIGINT PRIMARY KEY DEFAULT nextval('plans_id_seq'),
+    title            VARCHAR(255),
+    description      VARCHAR(1000),
+    final_price      NUMERIC(38, 2)           NOT NULL,
+    min_participants INTEGER                  NOT NULL,
+    max_participants INTEGER,
+    payment_type     SMALLINT CHECK (payment_type BETWEEN 0 AND 1),
+    type             VARCHAR(255) CHECK (type IN ('PRIVATE', 'PUBLIC')),
+    status           VARCHAR(255)             NOT NULL CHECK (status IN ('PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED')),
+    client_id        BIGINT                   NOT NULL,
+    schedule_id      BIGINT                   NOT NULL,
+    start_time       TIMESTAMP                NOT NULL,
+    end_time         TIMESTAMP                NOT NULL,
+    created_at       TIMESTAMP WITH TIME ZONE NOT NULL,
+    updated_at       TIMESTAMP WITH TIME ZONE,
+    created_by       VARCHAR(255),
+    updated_by       VARCHAR(255)
 );
 
-create table plans_comments
+-- Plans comments junction table
+CREATE TABLE plans_comments
 (
-    Plan_id     bigint not null,
-    comments_id bigint not null,
-    primary key (Plan_id, comments_id)
+    Plan_id     BIGINT NOT NULL,
+    comments_id BIGINT NOT NULL UNIQUE,
+    PRIMARY KEY (Plan_id, comments_id)
 );
 
-create table plans_users
+-- Plans users junction table
+CREATE TABLE plans_users
 (
-    Plan_id         bigint not null,
-    participants_id bigint not null,
-    primary key (Plan_id, participants_id)
+    Plan_id         BIGINT NOT NULL,
+    participants_id BIGINT NOT NULL,
+    PRIMARY KEY (Plan_id, participants_id)
 );
 
-create table posts
+-- Posts table
+CREATE TABLE posts
 (
-    id           bigint                      not null,
-    created_at   timestamp(6) with time zone not null,
-    created_by   varchar(255),
-    updated_at   timestamp(6) with time zone,
-    updated_by   varchar(255),
+    id           BIGINT PRIMARY KEY DEFAULT nextval('posts_id_seq'),
+    title        VARCHAR(255)             NOT NULL,
     content      TEXT,
-    title        varchar(255)                not null,
-    author_id    bigint                      not null,
-    community_id bigint                      not null,
-    primary key (id)
+    author_id    BIGINT                   NOT NULL,
+    community_id BIGINT                   NOT NULL,
+    created_at   TIMESTAMP WITH TIME ZONE NOT NULL,
+    updated_at   TIMESTAMP WITH TIME ZONE,
+    created_by   VARCHAR(255),
+    updated_by   VARCHAR(255)
 );
 
-create table schedules
+-- Schedules table
+CREATE TABLE schedules
 (
-    id             bigint                      not null,
-    created_at     timestamp(6) with time zone not null,
-    created_by     varchar(255),
-    updated_at     timestamp(6) with time zone,
-    updated_by     varchar(255),
-    breaks         TEXT,
-    end_date       date,
-    end_time       time(6)                     not null,
-    excluded_dates TEXT,
-    recurrence     varchar(15)                not null check (recurrence in ('SINGLE', 'DAILY', 'WEEKLY', 'CUSTOM_DAYS', 'HOLIDAYS')),
+    id             BIGINT PRIMARY KEY DEFAULT nextval('schedules_id_seq'),
+    activity_id    BIGINT                   NOT NULL,
+    start_date     DATE                     NOT NULL,
+    end_date       DATE,
+    start_time     TIME                     NOT NULL,
+    end_time       TIME                     NOT NULL,
+    recurrence     VARCHAR(255)             NOT NULL CHECK (recurrence IN ('SINGLE', 'DAILY', 'WEEKLY', 'CUSTOM_DAYS', 'HOLIDAYS')),
     recurring_days TEXT,
-    start_date     date                        not null,
-    start_time     time(6)                     not null,
-    activity_id    bigint                      not null,
-    primary key (id)
+    excluded_dates TEXT,
+    breaks         TEXT,
+    created_at     TIMESTAMP WITH TIME ZONE NOT NULL,
+    updated_at     TIMESTAMP WITH TIME ZONE,
+    created_by     VARCHAR(255),
+    updated_by     VARCHAR(255)
 );
 
-create table tags
+-- Tags table
+CREATE TABLE tags
 (
-    id         bigint                      not null,
-    created_at timestamp(6) with time zone not null,
-    created_by varchar(255),
-    updated_at timestamp(6) with time zone,
-    updated_by varchar(255),
-    name       varchar(50)                 not null,
-    type       varchar(15)                not null check (type in ('ACTIVITY_TYPE', 'INTEREST', 'SKILL_LEVEL')),
-    primary key (id)
+    id         BIGINT PRIMARY KEY DEFAULT nextval('tags_id_seq'),
+    name       VARCHAR(50)              NOT NULL UNIQUE,
+    type       VARCHAR(255)             NOT NULL CHECK (type IN ('ACTIVITY_TYPE', 'INTEREST', 'SKILL_LEVEL')),
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE,
+    created_by VARCHAR(255),
+    updated_by VARCHAR(255)
 );
 
-create table users
+-- Users table
+CREATE TABLE users
 (
-    user_type     varchar(31)                 not null,
-    id            bigint                      not null,
-    created_at    timestamp(6) with time zone not null,
-    created_by    varchar(255),
-    updated_at    timestamp(6) with time zone,
-    updated_by    varchar(255),
-    email         varchar(255),
-    first_name    varchar(255),
-    last_name     varchar(255),
-    password_hash varchar(255)                not null,
-    user_name     varchar(255),
-    business_name varchar(255),
-    logo          varchar(255),
-    tax_id        varchar(255),
-    primary key (id)
+    id            BIGINT PRIMARY KEY DEFAULT nextval('users_id_seq'),
+    user_type     VARCHAR(31)              NOT NULL,
+    user_name     VARCHAR(255) UNIQUE,
+    email         VARCHAR(255) UNIQUE,
+    password      VARCHAR(255),
+    password_hash VARCHAR(255)             NOT NULL,
+    first_name    VARCHAR(255),
+    last_name     VARCHAR(255),
+    business_name VARCHAR(255),
+    logo          VARCHAR(255),
+    tax_id        VARCHAR(255),
+    created_at    TIMESTAMP WITH TIME ZONE NOT NULL,
+    updated_at    TIMESTAMP WITH TIME ZONE,
+    created_by    VARCHAR(255),
+    updated_by    VARCHAR(255)
 );
 
-alter table if exists categories
-    drop constraint if exists UKt8o6pivur7nn124jehx7cygw5;
+-- Add foreign key constraints
+ALTER TABLE activities
+    ADD CONSTRAINT fk_activities_location FOREIGN KEY (location_id) REFERENCES locations (id);
 
-alter table if exists categories
-    add constraint UKt8o6pivur7nn124jehx7cygw5 unique (name);
+ALTER TABLE activities
+    ADD CONSTRAINT fk_activities_provider FOREIGN KEY (provider_id) REFERENCES users (id);
 
-alter table if exists categories
-    drop constraint if exists UKivqt9e06jfskg7wb1jfpf6836;
+ALTER TABLE activity_categories
+    ADD CONSTRAINT fk_activity_categories_category FOREIGN KEY (categories_id) REFERENCES categories (id);
 
-alter table if exists categories
-    add constraint UKivqt9e06jfskg7wb1jfpf6836 unique (category_id);
-alter table if exists communities
-    drop constraint if exists UK3vr2q12p5v4unsi7025edy28c;
-alter table if exists communities
-    add constraint UK3vr2q12p5v4unsi7025edy28c unique (name);
-alter table if exists payments
-    drop constraint if exists UKlryndveuwa4k5qthti0pkmtlx;
-alter table if exists payments
-    add constraint UKlryndveuwa4k5qthti0pkmtlx unique (transaction_id);
-alter table if exists payments
-    drop constraint if exists UKonidj3392lq6bv74kclrevjrx;
-alter table if exists payments
-    add constraint UKonidj3392lq6bv74kclrevjrx unique (plan_id);
-alter table if exists plans_comments
-    drop constraint if exists UKemco5uys9gjdvwyjd6l1umg0q;
-alter table if exists plans_comments
-    add constraint UKemco5uys9gjdvwyjd6l1umg0q unique (comments_id);
-alter table if exists tags
-    drop constraint if exists UKt48xdq560gs3gap9g7jg36kgc;
-alter table if exists tags
-    add constraint UKt48xdq560gs3gap9g7jg36kgc unique (name);
-alter table if exists users
-    drop constraint if exists UK6dotkott2kjsp8vw4d0m25fb7;
-alter table if exists users
-    add constraint UK6dotkott2kjsp8vw4d0m25fb7 unique (email);
-alter table if exists users
-    drop constraint if exists UKk8d0f2n7n88w1a16yhua64onx;
-alter table if exists users
-    add constraint UKk8d0f2n7n88w1a16yhua64onx unique (user_name);
-alter table if exists activities
-    add constraint FK3i7f1od1x93s60ul9j48qpdpe
-        foreign key (location_id)
-            references locations;
-alter table if exists activities
-    add constraint FK4dvp1jo35locfryxlugncpl11
-        foreign key (provider_id)
-            references users;
-alter table if exists activity_categories
-    add constraint FKh92223lxomwumgb2pm51979m1
-        foreign key (categories_id)
-            references categories;
-alter table if exists activity_categories
-    add constraint FK4fymmnudu4nmba3texnnxp5lr
-        foreign key (activities_id)
-            references activities;
-alter table if exists activity_tags
-    add constraint FKbeuo3k8n8i34kv0qwj6un5vlc
-        foreign key (tags_id)
-            references tags;
-alter table if exists activity_tags
-    add constraint FK6l27a8g205f1ikfrchp7kp4df
-        foreign key (activities_id)
-            references activities;
-alter table if exists categories
-    add constraint FKpvbv0s0kvln8xvjyf6jtfk10y
-        foreign key (category_id)
-            references media_content;
-alter table if exists client_preferences
-    add constraint FKqk1kbvuaa332lth5tx88tf14x
-        foreign key (Client_id)
-            references users;
-alter table if exists comments
-    add constraint FKn2na60ukhs76ibtpt9burkm27
-        foreign key (author_id)
-            references users;
-alter table if exists comments
-    add constraint FKf0340npvkkasvyk0q2nppxxcq
-        foreign key (plan_id)
-            references plans;
-alter table if exists comments
-    add constraint FKh4c7lvsc298whoyd4w9ta25cr
-        foreign key (post_id)
-            references posts;
-alter table if exists experiences
-    add constraint FK1bxwtkv9ci1rx3b1510qrmutw
-        foreign key (activity_id)
-            references activities;
-alter table if exists experiences
-    add constraint FKg8e6uccu4oaif9ooybnkck0h7
-        foreign key (client_id)
-            references users;
-alter table if exists media_content
-    add constraint FKjagpvoh5q3uflo05bhgq5v1n4
-        foreign key (activity_id)
-            references activities;
-alter table if exists media_content
-    add constraint FKpeevcy0ly4tdy2cefsm5roe8g
-        foreign key (experience_id)
-            references experiences;
-alter table if exists payments
-    add constraint FK70f50cqfiyp9w8qi5fgikvsxd
-        foreign key (plan_id)
-            references plans;
-alter table if exists plans
-    add constraint FK1oyp76gx3ua5c6025rc3xbgsu
-        foreign key (client_id)
-            references users;
-alter table if exists plans
-    add constraint FKekr7032gliq2rgmmc5s6fcpfg
-        foreign key (schedule_id)
-            references schedules;
-alter table if exists plans_comments
-    add constraint FKr3ngnoi2vkd3i61ov55rpmlrb
-        foreign key (comments_id)
-            references comments;
-alter table if exists plans_comments
-    add constraint FKseug77tww9p8tffhvwcl4mvtf
-        foreign key (Plan_id)
-            references plans;
-alter table if exists plans_users
-    add constraint FK10inbii6dpuoxwaotute2mffk
-        foreign key (participants_id)
-            references users;
-alter table if exists plans_users
-    add constraint FKtne8bxemaw5bqeevu56ymxsly
-        foreign key (Plan_id)
-            references plans;
-alter table if exists posts
-    add constraint FK6xvn0811tkyo3nfjk2xvqx6ns
-        foreign key (author_id)
-            references users;
-alter table if exists posts
-    add constraint FK7rk45ficmsfhe8n1dojvqt6ui
-        foreign key (community_id)
-            references communities;
-alter table if exists schedules
-    add constraint FK3tyc3usongts2dlum3e6c5in4
-        foreign key (activity_id)
-            references activities;
+ALTER TABLE activity_categories
+    ADD CONSTRAINT fk_activity_categories_activity FOREIGN KEY (activities_id) REFERENCES activities (id);
+
+ALTER TABLE activity_tags
+    ADD CONSTRAINT fk_activity_tags_tag FOREIGN KEY (tags_id) REFERENCES tags (id);
+
+ALTER TABLE activity_tags
+    ADD CONSTRAINT fk_activity_tags_activity FOREIGN KEY (activities_id) REFERENCES activities (id);
+
+ALTER TABLE categories
+    ADD CONSTRAINT fk_categories_media FOREIGN KEY (media_id) REFERENCES media_content (id);
+
+ALTER TABLE client_preferences
+    ADD CONSTRAINT fk_client_preferences_client FOREIGN KEY (Client_id) REFERENCES users (id);
+
+ALTER TABLE comments
+    ADD CONSTRAINT fk_comments_author FOREIGN KEY (author_id) REFERENCES users (id);
+
+ALTER TABLE comments
+    ADD CONSTRAINT fk_comments_plan FOREIGN KEY (plan_id) REFERENCES plans (id);
+
+ALTER TABLE comments
+    ADD CONSTRAINT fk_comments_post FOREIGN KEY (post_id) REFERENCES posts (id);
+
+ALTER TABLE experiences
+    ADD CONSTRAINT fk_experiences_activity FOREIGN KEY (activity_id) REFERENCES activities (id);
+
+ALTER TABLE experiences
+    ADD CONSTRAINT fk_experiences_client FOREIGN KEY (client_id) REFERENCES users (id);
+
+ALTER TABLE media_content
+    ADD CONSTRAINT fk_media_activity FOREIGN KEY (activity_id) REFERENCES activities (id);
+
+ALTER TABLE media_content
+    ADD CONSTRAINT fk_media_experience FOREIGN KEY (experience_id) REFERENCES experiences (id);
+
+ALTER TABLE payments
+    ADD CONSTRAINT fk_payments_plan FOREIGN KEY (plan_id) REFERENCES plans (id);
+
+ALTER TABLE plans
+    ADD CONSTRAINT fk_plans_client FOREIGN KEY (client_id) REFERENCES users (id);
+
+ALTER TABLE plans
+    ADD CONSTRAINT fk_plans_schedule FOREIGN KEY (schedule_id) REFERENCES schedules (id);
+
+ALTER TABLE plans_comments
+    ADD CONSTRAINT fk_plans_comments_comment FOREIGN KEY (comments_id) REFERENCES comments (id);
+
+ALTER TABLE plans_comments
+    ADD CONSTRAINT fk_plans_comments_plan FOREIGN KEY (Plan_id) REFERENCES plans (id);
+
+ALTER TABLE plans_users
+    ADD CONSTRAINT fk_plans_users_user FOREIGN KEY (participants_id) REFERENCES users (id);
+
+ALTER TABLE plans_users
+    ADD CONSTRAINT fk_plans_users_plan FOREIGN KEY (Plan_id) REFERENCES plans (id);
+
+ALTER TABLE posts
+    ADD CONSTRAINT fk_posts_author FOREIGN KEY (author_id) REFERENCES users (id);
+
+ALTER TABLE posts
+    ADD CONSTRAINT fk_posts_community FOREIGN KEY (community_id) REFERENCES communities (id);
+
+ALTER TABLE schedules
+    ADD CONSTRAINT fk_schedules_activity FOREIGN KEY (activity_id) REFERENCES activities (id);
+
+-- Set the sequences owned by columns
+ALTER SEQUENCE activities_id_seq OWNED BY activities.id;
+ALTER SEQUENCE categories_id_seq OWNED BY categories.id;
+ALTER SEQUENCE comments_id_seq OWNED BY comments.id;
+ALTER SEQUENCE communities_id_seq OWNED BY communities.id;
+ALTER SEQUENCE experiences_id_seq OWNED BY experiences.id;
+ALTER SEQUENCE locations_id_seq OWNED BY locations.id;
+ALTER SEQUENCE media_content_id_seq OWNED BY media_content.id;
+ALTER SEQUENCE plans_id_seq OWNED BY plans.id;
+ALTER SEQUENCE posts_id_seq OWNED BY posts.id;
+ALTER SEQUENCE schedules_id_seq OWNED BY schedules.id;
+ALTER SEQUENCE tags_id_seq OWNED BY tags.id;
+ALTER SEQUENCE users_id_seq OWNED BY users.id;

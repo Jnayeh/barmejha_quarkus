@@ -5,6 +5,8 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -21,7 +23,6 @@ import lombok.NoArgsConstructor;
 import org.barmejha.domain.entities.audit.AuditedEntity;
 import org.barmejha.domain.entities.media.MediaContent;
 import org.barmejha.domain.entities.users.Provider;
-import org.barmejha.domain.id.USID;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -37,7 +38,7 @@ import java.util.Set;
 public class Activity extends AuditedEntity {
 
   @Id
-  @USID
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(nullable = false)
@@ -47,7 +48,7 @@ public class Activity extends AuditedEntity {
   @Column(length = 1000)
   private String description;
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinColumn(name = "activity_id")
   private List<MediaContent> media;
 

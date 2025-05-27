@@ -6,6 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -21,7 +23,6 @@ import org.barmejha.domain.entities.schedule.LocalDateConverter;
 import org.barmejha.domain.entities.schedule.TimeRange;
 import org.barmejha.domain.entities.schedule.TimeRangeConverter;
 import org.barmejha.domain.enums.RecurrencePattern;
-import org.barmejha.domain.id.USID;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -38,7 +39,7 @@ import java.util.Set;
 public class Schedule extends AuditedEntity {
 
   @Id
-  @USID
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)

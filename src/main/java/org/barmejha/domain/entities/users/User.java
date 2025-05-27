@@ -8,6 +8,8 @@ import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
@@ -22,7 +24,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.barmejha.domain.entities.audit.AuditedEntity;
 import org.barmejha.domain.enums.UserType;
-import org.barmejha.domain.id.USID;
 
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
@@ -48,17 +49,18 @@ import org.barmejha.domain.id.USID;
 public class User extends AuditedEntity {
 
   @Id
-  @USID
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(unique = true)
   @Email
   private String email;
 
+  private String password;
+
   @Column(name = "password_hash", nullable = false)
   private String passwordHash;
 
-  //@Column(name = "user_type")
   @Transient
   @Enumerated(EnumType.STRING)
   private UserType type;

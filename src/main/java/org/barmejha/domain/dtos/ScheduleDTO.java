@@ -1,15 +1,15 @@
 package org.barmejha.domain.dtos;
 
-import org.barmejha.domain.dtos.utils.DTOUtils;
-import org.barmejha.domain.entities.Schedule;
-import org.barmejha.domain.entities.schedule.TimeRange;
-import org.barmejha.domain.enums.RecurrencePattern;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
+
+import org.barmejha.domain.dtos.utils.DTOUtils;
+import org.barmejha.domain.entities.Schedule;
+import org.barmejha.domain.entities.schedule.TimeRange;
+import org.barmejha.domain.enums.RecurrencePattern;
 
 public record ScheduleDTO(
     Long id,
@@ -21,8 +21,7 @@ public record ScheduleDTO(
     LocalTime startTime,
     LocalTime endTime,
     Set<TimeRange> breaks,
-    Set<LocalDate> excludedDates
-) {
+    Set<LocalDate> excludedDates) {
   public static ScheduleDTO fromEntity(Schedule entity, String lang) {
     if (entity == null) return null;
 
@@ -36,8 +35,7 @@ public record ScheduleDTO(
         entity.getStartTime(),
         entity.getEndTime(),
         DTOUtils.mapToSetIfInitialized(entity.getBreaks(), breakEntity -> breakEntity),
-        DTOUtils.mapToSetIfInitialized(entity.getExcludedDates(), date -> date)
-    );
+        DTOUtils.mapToSetIfInitialized(entity.getExcludedDates(), date -> date));
   }
 
   public static Set<ScheduleDTO> mapToSetIfInitialized(Set<Schedule> entities, String lang) {
@@ -48,4 +46,3 @@ public record ScheduleDTO(
     return DTOUtils.mapIfInitialized(entities, e -> fromEntity(e, lang));
   }
 }
-

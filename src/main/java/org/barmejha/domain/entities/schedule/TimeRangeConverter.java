@@ -15,6 +15,9 @@ public class TimeRangeConverter implements AttributeConverter<Set<TimeRange>, St
   @Override
   public String convertToDatabaseColumn(Set<TimeRange> ranges) {
     try {
+      if (ranges == null) {
+        return null;
+      }
       return new ObjectMapper().writeValueAsString(ranges);
     } catch (JsonProcessingException e) {
       throw new InternalServerErrorException("Error processing time range json", e);

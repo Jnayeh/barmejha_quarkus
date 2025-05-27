@@ -1,4 +1,4 @@
-package org.barmejha.repositories;
+package org.barmejha.repositories.users;
 
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;

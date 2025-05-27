@@ -7,7 +7,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import org.barmejha.domain.dtos.LocationDTO;
 import org.barmejha.domain.entities.Location;
-import org.barmejha.rest.interfaces.AbstractEntityResource;
+import org.barmejha.rest.abstraction.AbstractEntityResource;
 import org.barmejha.services.LocationService;
 
 @Path("/locations")

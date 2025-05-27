@@ -7,7 +7,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import org.barmejha.domain.dtos.CategoryDTO;
 import org.barmejha.domain.entities.Category;
-import org.barmejha.rest.interfaces.AbstractEntityResource;
+import org.barmejha.rest.abstraction.AbstractEntityResource;
 import org.barmejha.services.CategoryService;
 
 @Path("/categories")

@@ -1,5 +1,6 @@
-package org.barmejha.rest.interfaces;
+package org.barmejha.rest.abstraction;
 
+import io.quarkus.logging.Log;
 import io.smallrye.common.annotation.NonBlocking;
 import io.smallrye.mutiny.Uni;
 import jakarta.ws.rs.DELETE;
@@ -17,6 +18,10 @@ import org.barmejha.domain.request.QueryRequest;
 import org.barmejha.services.interfaces.IEntityService;
 
 import java.util.List;
+import java.util.Objects;
+
+import static org.barmejha.services.utils.ServiceUtils.okResponse;
+
 @NoArgsConstructor
 @AllArgsConstructor
 public abstract class AbstractEntityResource<T, D> {
@@ -27,40 +32,52 @@ public abstract class AbstractEntityResource<T, D> {
   @NonBlocking
   public Uni<List<D>> getAll(
       @Context HttpHeaders headers) {
-    return iEntityService.getAll(headers);
+    long startTime = System.currentTimeMillis();
+    return iEntityService.getAll(headers).invoke(res -> printResponseLog(okResponse(res), startTime));
   }
 
   @POST
   @NonBlocking
   @Path("/query")
   public Uni<List<D>> query(@Context HttpHeaders headers, QueryRequest queryRequest) {
-    return iEntityService.query(headers, queryRequest);
+    long startTime = System.currentTimeMillis();
+    return iEntityService.query(headers, queryRequest).invoke(res -> printResponseLog(okResponse(res), startTime));
   }
 
   @GET
   @NonBlocking
   @Path("/{id}")
   public Uni<D> getById(@Context HttpHeaders headers, @PathParam("id") Long id) {
-    return iEntityService.getById(headers, id);
+    long startTime = System.currentTimeMillis();
+    return iEntityService.getById(headers, id).invoke(res -> printResponseLog(okResponse(res), startTime));
   }
 
   @POST
   @NonBlocking
   public Uni<Response> create(@Context HttpHeaders headers, T entity) {
-    return iEntityService.create(headers, entity);
+    long startTime = System.currentTimeMillis();
+    return iEntityService.create(headers, entity).invoke(res -> printResponseLog(res, startTime));
   }
 
   @PUT
   @NonBlocking
   @Path("/{id}")
   public Uni<Response> update(@Context HttpHeaders headers, @PathParam("id") Long id, T updatedEntity) {
-    return iEntityService.update(headers, id, updatedEntity);
+    long startTime = System.currentTimeMillis();
+    return iEntityService.update(headers, id, updatedEntity).invoke(res -> printResponseLog(res, startTime));
   }
 
   @DELETE
   @NonBlocking
   @Path("/{id}")
   public Uni<Response> delete(@Context HttpHeaders headers, @PathParam("id") Long id) {
-    return iEntityService.delete(headers, id);
+    long startTime = System.currentTimeMillis();
+    return iEntityService.delete(headers, id).invoke(res -> printResponseLog(res, startTime));
+  }
+
+
+  private void printResponseLog(Response res, long startTime) {
+    Log.warnf("response ==> %s", Objects.toString(res.getEntity(), "null"));
+    Log.warnf("Successfully returned in %d ms", System.currentTimeMillis() - startTime);
   }
 }

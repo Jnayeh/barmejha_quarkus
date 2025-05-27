@@ -10,7 +10,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import org.barmejha.domain.dtos.ScheduleDTO;
 import org.barmejha.domain.entities.Schedule;
-import org.barmejha.rest.interfaces.AbstractEntityResource;
+import org.barmejha.rest.abstraction.AbstractEntityResource;
 import org.barmejha.services.ScheduleService;
 
 import java.util.List;

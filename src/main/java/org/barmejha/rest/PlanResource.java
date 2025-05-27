@@ -7,7 +7,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import org.barmejha.domain.dtos.PlanDTO;
 import org.barmejha.domain.entities.Plan;
-import org.barmejha.rest.interfaces.AbstractEntityResource;
+import org.barmejha.rest.abstraction.AbstractEntityResource;
 import org.barmejha.services.PlanService;
 
 @Path("/plans")

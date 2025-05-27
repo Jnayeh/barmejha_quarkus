@@ -7,7 +7,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import org.barmejha.domain.dtos.UserDTO;
 import org.barmejha.domain.entities.users.User;
-import org.barmejha.rest.interfaces.AbstractEntityResource;
+import org.barmejha.rest.abstraction.AbstractEntityResource;
 import org.barmejha.services.UserService;
 
 @Path("/users")

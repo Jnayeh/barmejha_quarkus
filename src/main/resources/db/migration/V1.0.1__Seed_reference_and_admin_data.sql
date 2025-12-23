@@ -1,175 +1,194 @@
-
-
--- ============================================
--- COMPREHENSIVE SEED DATA FOR TRAVEL PLATFORM
--- ============================================
--- Insert order: Tags → Categories → Users → Locations → Activities → Schedules →
---              Experiences → Media → Communities → Posts → Plans → Payments → Comments → Junction Tables
--- ============================================
-
--- 1. TAGS (independent table)
-INSERT INTO tags (id, name, type, created_at, updated_at, created_by, updated_by) VALUES
-(1696658400, 'Hiking', 'ACTIVITY_TYPE', '2024-10-01 09:00:00+00', NULL, 'system', NULL),
-(1696658407, 'Kayaking', 'ACTIVITY_TYPE', '2024-10-01 09:00:00+00', NULL, 'system', NULL),
-(1696658414, 'Yoga', 'ACTIVITY_TYPE', '2024-10-01 09:00:00+00', NULL, 'system', NULL),
-(1696658421, 'Cooking', 'ACTIVITY_TYPE', '2024-10-01 09:00:00+00', NULL, 'system', NULL),
-(1696658428, 'Photography', 'INTEREST', '2024-10-01 09:00:00+00', NULL, 'system', NULL),
-(1696658435, 'Beginner', 'SKILL_LEVEL', '2024-10-01 09:00:00+00', NULL, 'system', NULL),
-(1696658442, 'Intermediate', 'SKILL_LEVEL', '2024-10-01 09:00:00+00', NULL, 'system', NULL),
-(1696658449, 'Advanced', 'SKILL_LEVEL', '2024-10-01 09:00:00+00', NULL, 'system', NULL),
-(1696658456, 'Wellness', 'INTEREST', '2024-10-01 09:00:00+00', NULL, 'system', NULL),
-(1696658463, 'Adventure', 'INTEREST', '2024-10-01 09:00:00+00', NULL, 'system', NULL)
+-- 1. Seed tables with NO foreign key dependencies first
+-- Seed users (providers and clients) - no dependencies
+INSERT INTO users (id, user_type, user_name, email, password, password_hash, first_name, last_name, business_name, logo, tax_id, created_at, updated_at, created_by, updated_by)
+VALUES 
+    (1696658400, 'PROVIDER', 'outdoor_adventures', 'adventures@outdoor.com', NULL, 'hashed_password_1', 'John', 'Adventure', 'Outdoor Adventures LLC', 'https://example.com/logo1.png', 'TAX123456', '2023-10-01 10:00:00+00', NULL, 'system', NULL),
+    (1696658407, 'CLIENT', 'alice_wanderer', 'alice@email.com', NULL, 'hashed_password_2', 'Alice', 'Smith', NULL, NULL, NULL, '2023-10-01 10:30:00+00', NULL, 'system', NULL),
+    (1696658414, 'PROVIDER', 'culinary_masters', 'info@culinarymasters.com', NULL, 'hashed_password_3', 'Maria', 'Chef', 'Culinary Masters Inc.', 'https://example.com/logo2.png', 'TAX789012', '2023-10-01 11:00:00+00', NULL, 'system', NULL),
+    (1696658421, 'CLIENT', 'bob_explorer', 'bob@email.com', NULL, 'hashed_password_4', 'Bob', 'Johnson', NULL, NULL, NULL, '2023-10-01 11:30:00+00', NULL, 'system', NULL),
+    (1696658428, 'CLIENT', 'charlie_traveler', 'charlie@email.com', NULL, 'hashed_password_5', 'Charlie', 'Brown', NULL, NULL, NULL, '2023-10-01 12:00:00+00', NULL, 'system', NULL)
 ON CONFLICT (id) DO NOTHING;
 
--- 2. CATEGORIES (independent table)
-INSERT INTO categories (id, name, hex_color, created_at, updated_at, created_by, updated_by) VALUES
-(1696658400, 'Outdoor Adventures', '#4CAF50', '2024-10-01 09:00:00+00', NULL, 'system', NULL),
-(1696658407, 'Wellness & Health', '#9C27B0', '2024-10-01 09:00:00+00', NULL, 'system', NULL),
-(1696658414, 'Cultural Experiences', '#FF9800', '2024-10-01 09:00:00+00', NULL, 'system', NULL),
-(1696658421, 'Food & Drink', '#F44336', '2024-10-01 09:00:00+00', NULL, 'system', NULL),
-(1696658428, 'Water Sports', '#2196F3', '2024-10-01 09:00:00+00', NULL, 'system', NULL)
+-- Seed locations - no dependencies
+INSERT INTO locations (id, name, address, latitude, longitude, created_at, updated_at, created_by, updated_by)
+VALUES
+    (1696658400, 'Central Park', '59th to 110th Street, New York, NY', 40.785091, -73.968285, '2023-10-01 09:00:00+00', NULL, 'system', NULL),
+    (1696658407, 'Downtown Studio', '123 Main St, New York, NY', 40.748817, -73.985428, '2023-10-01 09:30:00+00', NULL, 'system', NULL),
+    (1696658414, 'Mountain Trailhead', '456 Mountain Rd, Catskill, NY', 42.221650, -74.230390, '2023-10-01 10:00:00+00', NULL, 'system', NULL),
+    (1696658421, 'Riverside Kitchen', '789 River Ave, Brooklyn, NY', 40.702500, -73.989000, '2023-10-01 10:30:00+00', NULL, 'system', NULL)
 ON CONFLICT (id) DO NOTHING;
 
--- 3. USERS (independent table)
-INSERT INTO users (id, user_type, user_name, email, password_hash, first_name, last_name, business_name, logo, tax_id, created_at, updated_at, created_by, updated_by) VALUES
--- Client Users
-(1696658400, 'client', 'john_doe', 'john.doe@email.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIH.FpzpJ7u5ZJ5G/pmiJQpJ2DpVY2W6', 'John', 'Doe', NULL, NULL, NULL, '2024-10-01 10:00:00+00', NULL, 'system', NULL),
-(1696658407, 'client', 'jane_smith', 'jane.smith@email.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIH.FpzpJ7u5ZJ5G/pmiJQpJ2DpVY2W6', 'Jane', 'Smith', NULL, NULL, NULL, '2024-10-01 10:00:00+00', NULL, 'system', NULL),
-(1696658414, 'client', 'mike_jones', 'mike.jones@email.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIH.FpzpJ7u5ZJ5G/pmiJQpJ2DpVY2W6', 'Mike', 'Jones', NULL, NULL, NULL, '2024-10-01 10:00:00+00', NULL, 'system', NULL),
-(1696658421, 'client', 'sara_wilson', 'sara.wilson@email.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIH.FpzpJ7u5ZJ5G/pmiJQpJ2DpVY2W6', 'Sara', 'Wilson', NULL, NULL, NULL, '2024-10-01 10:00:00+00', NULL, 'system', NULL),
--- Provider Users
-(1696658428, 'provider', 'adventure_co', 'contact@adventureco.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIH.FpzpJ7u5ZJ5G/pmiJQpJ2DpVY2W6', NULL, NULL, 'Adventure Co', 'logo_adventure.png', 'TAX123456', '2024-10-01 10:00:00+00', NULL, 'system', NULL),
-(1696658435, 'provider', 'wellness_retreat', 'info@wellnessretreat.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIH.FpzpJ7u5ZJ5G/pmiJQpJ2DpVY2W6', NULL, NULL, 'Wellness Retreat', 'logo_wellness.png', 'TAX789012', '2024-10-01 10:00:00+00', NULL, 'system', NULL),
-(1696658442, 'provider', 'culinary_journeys', 'hello@culinaryjourneys.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIH.FpzpJ7u5ZJ5G/pmiJQpJ2DpVY2W6', NULL, NULL, 'Culinary Journeys', 'logo_culinary.png', 'TAX345678', '2024-10-01 10:00:00+00', NULL, 'system', NULL)
+-- Seed tags - no dependencies
+INSERT INTO tags (id, name, type, created_at, updated_at, created_by, updated_by)
+VALUES
+    (1696658400, 'HIKING', 'ACTIVITY_TYPE', '2023-10-01 08:00:00+00', NULL, 'system', NULL),
+    (1696658407, 'COOKING', 'ACTIVITY_TYPE', '2023-10-01 08:07:00+00', NULL, 'system', NULL),
+    (1696658414, 'OUTDOORS', 'INTEREST', '2023-10-01 08:14:00+00', NULL, 'system', NULL),
+    (1696658421, 'FOOD', 'INTEREST', '2023-10-01 08:21:00+00', NULL, 'system', NULL),
+    (1696658428, 'BEGINNER', 'SKILL_LEVEL', '2023-10-01 08:28:00+00', NULL, 'system', NULL),
+    (1696658435, 'INTERMEDIATE', 'SKILL_LEVEL', '2023-10-01 08:35:00+00', NULL, 'system', NULL),
+    (1696658442, 'YOGA', 'ACTIVITY_TYPE', '2023-10-01 08:42:00+00', NULL, 'system', NULL),
+    (1696658449, 'WELLNESS', 'INTEREST', '2023-10-01 08:49:00+00', NULL, 'system', NULL)
 ON CONFLICT (id) DO NOTHING;
 
--- 4. LOCATIONS (independent table)
-INSERT INTO locations (id, name, address, latitude, longitude, created_at, updated_at, created_by, updated_by) VALUES
-(1696658400, 'Mountain Peak Trailhead', '123 Mountain Road, Alpine Village', 46.9479, 7.4474, '2024-10-01 11:00:00+00', NULL, 'system', NULL),
-(1696658407, 'Lake Serenity Shore', '456 Lakeside Drive, Waterside Town', 46.4260, 6.2187, '2024-10-01 11:00:00+00', NULL, 'system', NULL),
-(1696658414, 'Yoga Studio Harmony', '789 Peace Street, Zen City', 46.2044, 6.1432, '2024-10-01 11:00:00+00', NULL, 'system', NULL),
-(1696658421, 'Culinary Arts Center', '321 Chef Avenue, Gourmet City', 46.1984, 6.1423, '2024-10-01 11:00:00+00', NULL, 'system', NULL)
+-- 2. Seed tables that depend ONLY on already seeded tables
+-- Seed media_content for categories (no activity_id or experience_id yet)
+INSERT INTO media_content (id, url, type, activity_id, experience_id, created_at, updated_at, created_by, updated_by)
+VALUES
+    (1696658400, 'https://example.com/hiking-act1.jpg', 'IMAGE', NULL, NULL, '2023-10-01 08:45:00+00', NULL, 'system', NULL),
+    (1696658407, 'https://example.com/cooking-act1.jpg', 'IMAGE', NULL, NULL, '2023-10-01 08:52:00+00', NULL, 'system', NULL),
+    (1696658414, 'https://example.com/yoga-act1.jpg', 'IMAGE', NULL, NULL, '2023-10-01 08:59:00+00', NULL, 'system', NULL),
+    (1696658421, 'https://example.com/category-hiking.jpg', 'IMAGE', NULL, NULL, '2023-10-01 09:05:00+00', NULL, 'system', NULL),
+    (1696658428, 'https://example.com/category-cooking.jpg', 'IMAGE', NULL, NULL, '2023-10-01 09:12:00+00', NULL, 'system', NULL),
+    (1696658435, 'https://example.com/category-wellness.jpg', 'IMAGE', NULL, NULL, '2023-10-01 09:19:00+00', NULL, 'system', NULL),
+    (1696658442, 'https://example.com/category-fitness.jpg', 'IMAGE', NULL, NULL, '2023-10-01 09:26:00+00', NULL, 'system', NULL),
+    (1696658449, 'https://example.com/category-nature.jpg', 'IMAGE', NULL, NULL, '2023-10-01 09:33:00+00', NULL, 'system', NULL)
 ON CONFLICT (id) DO NOTHING;
 
--- 5. ACTIVITIES (depends on locations and providers)
-INSERT INTO activities (id, name, description, base_price, discount_price, duration, location_id, provider_id, created_at, updated_at, created_by, updated_by) VALUES
-(1696658400, 'Sunset Mountain Hike', 'Guided evening hike to watch the sunset from the peak. Includes snacks and photography tips.', 75.00, 65.00, 180, 1696658400, 1696658428, '2024-10-01 12:00:00+00', NULL, 'system', NULL),
-(1696658407, 'Morning Lake Kayaking', 'Peaceful morning kayaking session on Lake Serenity. Suitable for beginners.', 55.00, 45.00, 120, 1696658407, 1696658428, '2024-10-01 12:00:00+00', NULL, 'system', NULL),
-(1696658414, 'Sunrise Yoga Flow', 'Energizing yoga session at sunrise with meditation and breathing exercises.', 40.00, NULL, 90, 1696658414, 1696658435, '2024-10-01 12:00:00+00', NULL, 'system', NULL),
-(1696658421, 'Italian Cooking Masterclass', 'Learn to make authentic pasta and tiramisu from a master chef.', 120.00, 99.00, 240, 1696658421, 1696658442, '2024-10-01 12:00:00+00', NULL, 'system', NULL)
+-- Seed categories (depends on media_content)
+INSERT INTO categories (id, name, hex_color, media_id, created_at, updated_at, created_by, updated_by)
+VALUES
+    (1696658400, 'Adventure', '#FF6B35', 1696658421, '2023-10-01 09:00:00+00', NULL, 'system', NULL),
+    (1696658407, 'Culinary', '#4ECDC4', 1696658428, '2023-10-01 09:07:00+00', NULL, 'system', NULL),
+    (1696658414, 'Wellness', '#45B7D1', 1696658435, '2023-10-01 09:14:00+00', NULL, 'system', NULL),
+    (1696658421, 'Fitness', '#96CEB4', 1696658442, '2023-10-01 09:21:00+00', NULL, 'system', NULL),
+    (1696658428, 'Nature', '#FEBE10', 1696658449, '2023-10-01 09:28:00+00', NULL, 'system', NULL)
 ON CONFLICT (id) DO NOTHING;
 
--- 6. SCHEDULES (depends on activities)
-INSERT INTO schedules (id, activity_id, start_date, end_date, start_time, end_time, recurrence, recurring_days, excluded_dates, breaks, created_at, updated_at, created_by, updated_by) VALUES
-(1696658400, 1696658400, '2024-10-05', NULL, '16:00:00', '19:00:00', 'WEEKLY', 'SAT,SUN', NULL, NULL, '2024-10-01 13:00:00+00', NULL, 'system', NULL),
-(1696658407, 1696658407, '2024-10-06', NULL, '08:00:00', '10:00:00', 'DAILY', NULL, '2024-12-25', '30 minute snack break', '2024-10-01 13:00:00+00', NULL, 'system', NULL),
-(1696658414, 1696658414, '2024-10-07', '2024-12-31', '06:30:00', '08:00:00', 'CUSTOM_DAYS', 'MON,WED,FRI', NULL, NULL, '2024-10-01 13:00:00+00', NULL, 'system', NULL),
-(1696658421, 1696658421, '2024-10-10', NULL, '18:00:00', '22:00:00', 'SINGLE', NULL, NULL, NULL, '2024-10-01 13:00:00+00', NULL, 'system', NULL)
+-- Seed activities (depends on locations and users)
+INSERT INTO activities (id, name, description, base_price, discount_price, duration, location_id, provider_id, created_at, updated_at, created_by, updated_by)
+VALUES
+    (1696658400, 'Morning Hike in the Catskills', 'Enjoy a guided morning hike through beautiful mountain trails with scenic views.', 50.00, 45.00, 180, 1696658414, 1696658400, '2023-10-01 10:00:00+00', NULL, 'system', NULL),
+    (1696658407, 'Italian Cooking Class', 'Learn to make authentic pasta and tiramisu from scratch with a professional chef.', 75.00, 65.00, 120, 1696658421, 1696658414, '2023-10-01 10:07:00+00', NULL, 'system', NULL),
+    (1696658414, 'Central Park Yoga Session', 'Morning yoga session in the heart of Central Park, suitable for all levels.', 30.00, NULL, 60, 1696658400, 1696658400, '2023-10-01 10:14:00+00', NULL, 'system', NULL)
 ON CONFLICT (id) DO NOTHING;
 
--- 7. EXPERIENCES (depends on activities and clients)
-INSERT INTO experiences (id, activity_id, client_id, rating, review, created_at, updated_at, created_by, updated_by) VALUES
-(1696658400, 1696658400, 1696658400, 5, 'Absolutely breathtaking views! The guide was knowledgeable and friendly.', '2024-09-15 18:30:00+00', NULL, 'system', NULL),
-(1696658407, 1696658400, 1696658407, 4, 'Great hike but a bit challenging for beginners.', '2024-09-20 19:00:00+00', NULL, 'system', NULL),
-(1696658414, 1696658407, 1696658414, 5, 'So peaceful on the lake. Would do this every morning if I could!', '2024-09-18 10:30:00+00', NULL, 'system', NULL),
-(1696658421, 1696658414, 1696658421, 4, 'Perfect way to start the day. Instructor was excellent.', '2024-09-22 08:00:00+00', NULL, 'system', NULL)
+-- 4. Seed more media_content to link to activities
+INSERT INTO media_content (id, url, type, activity_id, experience_id, created_at, updated_at, created_by, updated_by)
+VALUES
+    (1696658456, 'https://example.com/hike-activity-main.jpg', 'IMAGE', 1696658400, NULL, '2023-10-01 10:20:00+00', NULL, 'system', NULL),
+    (1696658463, 'https://example.com/cooking-activity-main.jpg', 'IMAGE', 1696658407, NULL, '2023-10-01 10:27:00+00', NULL, 'system', NULL),
+    (1696658470, 'https://example.com/yoga-activity-main.jpg', 'IMAGE', 1696658414, NULL, '2023-10-01 10:34:00+00', NULL, 'system', NULL)
 ON CONFLICT (id) DO NOTHING;
 
--- 8. MEDIA_CONTENT (depends on activities and experiences)
-INSERT INTO media_content (id, url, type, activity_id, experience_id, created_at, updated_at, created_by, updated_by) VALUES
-(1696658400, 'https://example.com/images/sunset_hike_1.jpg', 'IMAGE', 1696658400, 1696658400, '2024-10-01 14:00:00+00', NULL, 'system', NULL),
-(1696658407, 'https://example.com/videos/kayaking_demo.mp4', 'VIDEO', 1696658407, 1696658414, '2024-10-01 14:00:00+00', NULL, 'system', NULL),
-(1696658414, 'https://youtube.com/watch?v=abc123yoga', 'YOUTUBE', 1696658414, 1696658421, '2024-10-01 14:00:00+00', NULL, 'system', NULL),
-(1696658421, 'https://vimeo.com/123456789', 'VIMEO', 1696658407, 1696658414, '2024-10-01 14:00:00+00', NULL, 'system', NULL),
-(1696658428, 'https://example.com/images/cooking_class.jpg', 'IMAGE', 1696658414, 1696658421, '2024-10-01 14:00:00+00', NULL, 'system', NULL)
+-- 5. Seed junction tables that depend on activities, categories, tags
+-- Seed activity_categories - each activity relates to at least 2 categories
+INSERT INTO activity_categories (activities_id, categories_id)
+VALUES
+    -- Hiking activity relates to Adventure, Nature, and Fitness
+    (1696658400, 1696658400), -- Hiking -> Adventure
+    (1696658400, 1696658428), -- Hiking -> Nature
+    (1696658400, 1696658421), -- Hiking -> Fitness
+    -- Cooking activity relates to Culinary and Food
+    (1696658407, 1696658407), -- Cooking -> Culinary
+    (1696658407, 1696658421), -- Cooking -> Fitness (cooking can be physical)
+    -- Yoga activity relates to Wellness and Fitness
+    (1696658414, 1696658414), -- Yoga -> Wellness
+    (1696658414, 1696658421)  -- Yoga -> Fitness
+ON CONFLICT (activities_id, categories_id) DO NOTHING;
+
+-- Seed activity_tags
+INSERT INTO activity_tags (activities_id, tags_id)
+VALUES
+    (1696658400, 1696658400), -- Hiking activity -> HIKING tag
+    (1696658400, 1696658414), -- Hiking activity -> OUTDOORS tag
+    (1696658400, 1696658428), -- Hiking activity -> BEGINNER tag
+    (1696658407, 1696658407), -- Cooking activity -> COOKING tag
+    (1696658407, 1696658421), -- Cooking activity -> FOOD tag
+    (1696658407, 1696658428), -- Cooking activity -> BEGINNER tag
+    (1696658414, 1696658442), -- Yoga activity -> YOGA tag
+    (1696658414, 1696658449), -- Yoga activity -> WELLNESS tag
+    (1696658414, 1696658428)  -- Yoga activity -> BEGINNER tag
+ON CONFLICT (activities_id, tags_id) DO NOTHING;
+
+-- 6. Seed schedules (depends on activities)
+INSERT INTO schedules (id, activity_id, start_date, end_date, start_time, end_time, recurrence, recurring_days, excluded_dates, breaks, created_at, updated_at, created_by, updated_by)
+VALUES
+    (1696658400, 1696658400, '2023-10-15', '2023-12-15', '08:00:00', '11:00:00', 'WEEKLY', '["SATURDAY", "SUNDAY"]', '["2023-11-23"]', '[]', '2023-10-01 11:00:00+00', NULL, 'system', NULL),
+    (1696658407, 1696658407, '2023-10-20', '2023-12-20', '18:00:00', '20:00:00', 'WEEKLY', '["FRIDAY"]', '["2023-11-24"]', '[]', '2023-10-01 11:07:00+00', NULL, 'system', NULL),
+    (1696658414, 1696658414, '2023-10-10', NULL, '07:00:00', '08:00:00', 'DAILY', NULL, '[]', '[]', '2023-10-01 11:14:00+00', NULL, 'system', NULL)
 ON CONFLICT (id) DO NOTHING;
 
--- 9. Update categories with media references (circular dependency resolution)
-UPDATE categories SET media_id = 1696658400 WHERE id = 1696658400;
-UPDATE categories SET media_id = 1696658407 WHERE id = 1696658407;
-
--- 10. COMMUNITIES (independent table)
-INSERT INTO communities (id, name, description, created_at, updated_at, created_by, updated_by) VALUES
-(1696658400, 'Outdoor Enthusiasts', 'For those who love hiking, camping, and all things outdoors!', '2024-10-01 15:00:00+00', NULL, 'system', NULL),
-(1696658407, 'Wellness Warriors', 'Share tips, experiences, and support for mental and physical wellbeing.', '2024-10-01 15:00:00+00', NULL, 'system', NULL),
-(1696658414, 'Foodie Adventures', 'Discover culinary experiences and share your food journey.', '2024-10-01 15:00:00+00', NULL, 'system', NULL)
+-- 7. Seed communities (no dependencies)
+INSERT INTO communities (id, name, description, created_at, updated_at, created_by, updated_by)
+VALUES
+    (1696658400, 'Outdoor Enthusiasts', 'A community for hiking, camping, and outdoor adventures', '2023-10-01 12:00:00+00', NULL, 'system', NULL),
+    (1696658407, 'Food Lovers NYC', 'Share recipes, restaurants, and cooking tips in New York', '2023-10-01 12:07:00+00', NULL, 'system', NULL)
 ON CONFLICT (id) DO NOTHING;
 
--- 11. POSTS (depends on communities and users)
-INSERT INTO posts (id, title, content, author_id, community_id, created_at, updated_at, created_by, updated_by) VALUES
-(1696658400, 'Best Hiking Trails for Fall', 'The autumn colors are stunning right now on the Northern Ridge trail...', 1696658400, 1696658400, '2024-10-01 16:00:00+00', NULL, 'system', NULL),
-(1696658407, 'Meditation Techniques That Work', 'I''ve been practicing these 5 techniques and my focus has improved significantly...', 1696658407, 1696658407, '2024-10-01 16:00:00+00', NULL, 'system', NULL),
-(1696658414, 'Hidden Gem Italian Restaurant', 'Just discovered this amazing family-owned place in the old town...', 1696658414, 1696658414, '2024-10-01 16:00:00+00', NULL, 'system', NULL)
+-- 8. Seed plans (depends on users and schedules)
+INSERT INTO plans (id, title, description, final_price, min_participants, max_participants, payment_type, type, status, client_id, schedule_id, start_time, end_time, created_at, updated_at, created_by, updated_by)
+VALUES
+    (1696658400, 'Weekend Hiking Trip', 'Private hiking trip for friends', 180.00, 4, 8, 1, 'PRIVATE', 'CONFIRMED', 1696658407, 1696658400, '2023-10-21 08:00:00', '2023-10-21 11:00:00', '2023-10-05 14:00:00+00', NULL, 'alice_wanderer', NULL),
+    (1696658407, 'Italian Cooking Party', 'Group cooking class for team building', 260.00, 4, 12, 1, 'PUBLIC', 'CONFIRMED', 1696658421, 1696658407, '2023-10-27 18:00:00', '2023-10-27 20:00:00', '2023-10-06 15:30:00+00', NULL, 'bob_explorer', NULL),
+    (1696658414, 'Morning Yoga Session', 'Daily yoga for wellness', 30.00, 1, 20, 0, 'PUBLIC', 'PENDING', 1696658428, 1696658414, '2023-10-12 07:00:00', '2023-10-12 08:00:00', '2023-10-07 09:00:00+00', NULL, 'charlie_traveler', NULL)
 ON CONFLICT (id) DO NOTHING;
 
--- 12. PLANS (depends on schedules and clients)
-INSERT INTO plans (id, title, description, final_price, min_participants, max_participants, payment_type, type, status, client_id, schedule_id, start_time, end_time, created_at, updated_at, created_by, updated_by) VALUES
-(1696658400, 'Weekend Hike Group', 'Group hike for weekend adventurers', 65.00, 3, 10, 0, 'PUBLIC', 'CONFIRMED', 1696658400, 1696658400, '2024-10-05 16:00:00', '2024-10-05 19:00:00', '2024-10-01 17:00:00+00', NULL, 'system', NULL),
-(1696658407, 'Private Yoga Session', 'One-on-one yoga instruction', 80.00, 1, 1, 1, 'PRIVATE', 'PENDING', 1696658407, 1696658414, '2024-10-08 06:30:00', '2024-10-08 08:00:00', '2024-10-01 17:00:00+00', NULL, 'system', NULL),
-(1696658414, 'Cooking Date Night', 'Couples cooking class', 198.00, 2, 2, 0, 'PRIVATE', 'COMPLETED', 1696658414, 1696658421, '2024-10-10 18:00:00', '2024-10-10 22:00:00', '2024-10-01 17:00:00+00', NULL, 'system', NULL)
+-- 9. Seed experiences (depends on activities and users)
+INSERT INTO experiences (id, activity_id, client_id, rating, review, created_at, updated_at, created_by, updated_by)
+VALUES
+    (1696658400, 1696658400, 1696658407, 5, 'Amazing hike with beautiful views! The guide was very knowledgeable.', '2023-09-15 16:00:00+00', NULL, 'alice_wanderer', NULL),
+    (1696658407, 1696658407, 1696658421, 4, 'Great cooking class, learned a lot about Italian cuisine.', '2023-09-20 19:30:00+00', NULL, 'bob_explorer', NULL)
 ON CONFLICT (id) DO NOTHING;
 
--- 13. PAYMENTS (depends on plans)
-INSERT INTO payments (id, amount, currency, status, transaction_id, plan_id, processed_at) VALUES
-('pay_001', 65.00, 'USD', 'SUCCEEDED', 'txn_001', 1696658400, '2024-10-02 10:30:00+00'),
-('pay_002', 80.00, 'USD', 'PENDING', 'txn_002', 1696658407, '2024-10-02 11:00:00+00'),
-('pay_003', 198.00, 'USD', 'REFUNDED', 'txn_003', 1696658414, '2024-10-02 11:30:00+00')
+-- 10. Seed media_content for experiences (depends on experiences)
+INSERT INTO media_content (id, url, type, activity_id, experience_id, created_at, updated_at, created_by, updated_by)
+VALUES
+    (1696658477, 'https://example.com/hike-exp1.jpg', 'IMAGE', NULL, 1696658400, '2023-09-15 16:15:00+00', NULL, 'alice_wanderer', NULL),
+    (1696658484, 'https://example.com/cooking-exp1.jpg', 'IMAGE', NULL, 1696658407, '2023-09-20 19:45:00+00', NULL, 'bob_explorer', NULL),
+    (1696658491, 'https://example.com/hike-video.mp4', 'VIDEO', NULL, 1696658400, '2023-09-15 16:20:00+00', NULL, 'alice_wanderer', NULL)
 ON CONFLICT (id) DO NOTHING;
 
--- 14. COMMENTS (depends on posts, plans, and users)
-INSERT INTO comments (id, content, author_id, plan_id, post_id, created_at, updated_at, created_by, updated_by) VALUES
-(1696658400, 'That trail looks amazing! How long is the full loop?', 1696658407, NULL, 1696658400, '2024-10-01 18:00:00+00', NULL, 'system', NULL),
-(1696658407, 'I''ll be joining the hike! Looking forward to meeting everyone.', 1696658414, 1696658400, NULL, '2024-10-01 18:00:00+00', NULL, 'system', NULL),
-(1696658414, 'Can you share the restaurant name? I''d love to try it!', 1696658421, NULL, 1696658414, '2024-10-01 18:00:00+00', NULL, 'system', NULL),
-(1696658421, 'The yoga session was transformative!', 1696658400, 1696658407, NULL, '2024-10-01 18:00:00+00', NULL, 'system', NULL)
+-- 11. Seed payments (depends on plans)
+INSERT INTO payments (id, amount, currency, status, transaction_id, plan_id, processed_at)
+VALUES
+    ('pay_1', 180.00, 'USD', 'SUCCEEDED', 'txn_123456', 1696658400, '2023-10-05 14:30:00+00'),
+    ('pay_2', 260.00, 'USD', 'SUCCEEDED', 'txn_789012', 1696658407, '2023-10-06 16:00:00+00'),
+    ('pay_3', 30.00, 'USD', 'PENDING', NULL, 1696658414, '2023-10-07 09:15:00+00')
 ON CONFLICT (id) DO NOTHING;
 
--- 15. JUNCTION TABLES (connect relationships)
+-- 12. Seed posts (depends on users and communities)
+INSERT INTO posts (id, title, content, author_id, community_id, created_at, updated_at, created_by, updated_by)
+VALUES
+    (1696658400, 'Best Fall Hiking Trails', 'What are your favorite hiking spots for fall foliage this year?', 1696658407, 1696658400, '2023-10-02 09:00:00+00', NULL, 'alice_wanderer', NULL),
+    (1696658407, 'Authentic Pizza Recipe', 'Sharing my grandmother''s secret pizza dough recipe!', 1696658421, 1696658407, '2023-10-02 10:30:00+00', NULL, 'bob_explorer', NULL)
+ON CONFLICT (id) DO NOTHING;
 
--- Activity Categories
-INSERT INTO activity_categories (activities_id, categories_id) VALUES
-(1696658400, 1696658400), -- Hiking → Outdoor Adventures
-(1696658407, 1696658428), -- Kayaking → Water Sports
-(1696658414, 1696658407), -- Yoga → Wellness & Health
-(1696658421, 1696658421)  -- Cooking → Food & Drink
-ON CONFLICT DO NOTHING;
+-- 13. Seed comments (depends on users, plans, and posts)
+INSERT INTO comments (id, content, author_id, plan_id, post_id, created_at, updated_at, created_by, updated_by)
+VALUES
+    (1696658400, 'Looking forward to this hike!', 1696658421, 1696658400, NULL, '2023-10-05 14:15:00+00', NULL, 'bob_explorer', NULL),
+    (1696658407, 'Can''t wait to learn how to cook pasta!', 1696658428, 1696658407, NULL, '2023-10-06 15:45:00+00', NULL, 'charlie_traveler', NULL),
+    (1696658414, 'I love the Appalachian Trail in October!', 1696658428, NULL, 1696658400, '2023-10-02 10:00:00+00', NULL, 'charlie_traveler', NULL),
+    (1696658421, 'Thanks for sharing! Tried it and it''s amazing!', 1696658407, NULL, 1696658407, '2023-10-02 11:30:00+00', NULL, 'alice_wanderer', NULL)
+ON CONFLICT (id) DO NOTHING;
 
--- Activity Tags
-INSERT INTO activity_tags (activities_id, tags_id) VALUES
-(1696658400, 1696658400), -- Hiking → Hiking tag
-(1696658400, 1696658435), -- Hiking → Beginner tag
-(1696658400, 1696658463), -- Hiking → Adventure tag
-(1696658407, 1696658407), -- Kayaking → Kayaking tag
-(1696658407, 1696658435), -- Kayaking → Beginner tag
-(1696658414, 1696658414), -- Yoga → Yoga tag
-(1696658414, 1696658456), -- Yoga → Wellness tag
-(1696658421, 1696658421), -- Cooking → Cooking tag
-(1696658421, 1696658442)  -- Cooking → Intermediate tag
-ON CONFLICT DO NOTHING;
+-- 14. Seed junction tables that depend on plans and comments
+-- Seed plans_comments
+INSERT INTO plans_comments (Plan_id, comments_id)
+VALUES
+    (1696658400, 1696658400),
+    (1696658407, 1696658407)
+ON CONFLICT (Plan_id, comments_id) DO NOTHING;
 
--- Client Preferences
-INSERT INTO client_preferences (Client_id, preferredTagIds) VALUES
-(1696658400, 1696658400), -- John prefers Hiking
-(1696658400, 1696658463), -- John prefers Adventure
-(1696658407, 1696658414), -- Jane prefers Yoga
-(1696658414, 1696658421)  -- Mike prefers Cooking
-ON CONFLICT DO NOTHING;
+-- Seed plans_users (depends on plans and users)
+INSERT INTO plans_users (Plan_id, participants_id)
+VALUES
+    (1696658400, 1696658407), -- Alice in hiking plan
+    (1696658400, 1696658421), -- Bob in hiking plan
+    (1696658400, 1696658428), -- Charlie in hiking plan
+    (1696658407, 1696658421), -- Bob in cooking plan
+    (1696658407, 1696658428), -- Charlie in cooking plan
+    (1696658414, 1696658428)  -- Charlie in yoga plan
+ON CONFLICT (Plan_id, participants_id) DO NOTHING;
 
--- Plans Comments
-INSERT INTO plans_comments (Plan_id, comments_id) VALUES
-(1696658400, 1696658407), -- Group hike comment
-(1696658407, 1696658421)  -- Yoga session comment
-ON CONFLICT DO NOTHING;
-
--- Plans Users (participants)
-INSERT INTO plans_users (Plan_id, participants_id) VALUES
-(1696658400, 1696658400), -- John in hike group
-(1696658400, 1696658407), -- Jane in hike group
-(1696658400, 1696658414), -- Mike in hike group
-(1696658414, 1696658414), -- Mike in cooking class
-(1696658414, 1696658421)  -- Sara in cooking class
-ON CONFLICT DO NOTHING;
-
--- ============================================
--- VERIFICATION QUERIES
--- ============================================
+-- 15. Seed client_preferences (depends on users and tags)
+INSERT INTO client_preferences (Client_id, preferredTagIds)
+VALUES
+    (1696658407, 1696658400), -- Alice prefers HIKING
+    (1696658407, 1696658414), -- Alice prefers OUTDOORS
+    (1696658421, 1696658407), -- Bob prefers COOKING
+    (1696658421, 1696658421), -- Bob prefers FOOD
+    (1696658428, 1696658442), -- Charlie prefers YOGA
+    (1696658428, 1696658449)  -- Charlie prefers WELLNESS
+;

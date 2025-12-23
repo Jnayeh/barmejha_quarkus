@@ -12,10 +12,9 @@ import org.barmejha.domain.dtos.LocationDTO;
 import org.barmejha.domain.entities.Location;
 import org.barmejha.domain.request.QueryRequest;
 import org.barmejha.repositories.LocationRepository;
-import org.barmejha.services.interfaces.IEntityService;
+import org.barmejha.services._interface.IEntityService;
 import org.barmejha.services.utils.ServiceUtils;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +29,7 @@ public class LocationService implements IEntityService<Location, LocationDTO> {
   @Override
   @WithSession
   public Uni<List<LocationDTO>> getAll(HttpHeaders headers) {
-    return query(headers, QueryRequest.builder().build());
+    return locationRepository.findAll().list().map(this::toDTO);
   }
 
   @Override

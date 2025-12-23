@@ -1,4 +1,4 @@
-package org.barmejha.services;
+package org.barmejha.services.users;
 
 import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
@@ -14,7 +14,7 @@ import org.barmejha.domain.entities.users.Provider;
 import org.barmejha.domain.entities.users.User;
 import org.barmejha.domain.request.QueryRequest;
 import org.barmejha.repositories.users.ProviderRepository;
-import org.barmejha.services.interfaces.IEntityService;
+import org.barmejha.services._interface.IEntityService;
 import org.barmejha.services.utils.ServiceUtils;
 
 import java.util.ArrayList;

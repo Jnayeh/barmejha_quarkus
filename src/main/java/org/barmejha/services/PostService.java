@@ -12,7 +12,7 @@ import org.barmejha.domain.dtos.PostDTO;
 import org.barmejha.domain.entities.communities.Post;
 import org.barmejha.domain.request.QueryRequest;
 import org.barmejha.repositories.PostRepository;
-import org.barmejha.services.interfaces.IEntityService;
+import org.barmejha.services._interface.IEntityService;
 import org.barmejha.services.utils.ServiceUtils;
 
 import java.util.ArrayList;

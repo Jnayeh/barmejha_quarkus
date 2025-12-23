@@ -15,7 +15,7 @@ import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.barmejha.domain.request.QueryRequest;
-import org.barmejha.services.interfaces.IEntityService;
+import org.barmejha.services._interface.IEntityService;
 
 import java.util.List;
 import java.util.Objects;

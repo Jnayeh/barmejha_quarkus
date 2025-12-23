@@ -15,7 +15,7 @@ import org.barmejha.domain.entities.Activity;
 import org.barmejha.domain.exceptions.ErrorBody;
 import org.barmejha.domain.request.QueryRequest;
 import org.barmejha.repositories.ActivityRepository;
-import org.barmejha.services.interfaces.IEntityService;
+import org.barmejha.services._interface.IEntityService;
 import org.barmejha.services.utils.ServiceUtils;
 
 import java.util.ArrayList;

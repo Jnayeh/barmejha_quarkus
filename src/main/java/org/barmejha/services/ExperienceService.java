@@ -12,7 +12,7 @@ import org.barmejha.domain.dtos.ExperienceDTO;
 import org.barmejha.domain.entities.Experience;
 import org.barmejha.domain.request.QueryRequest;
 import org.barmejha.repositories.ExperienceRepository;
-import org.barmejha.services.interfaces.IEntityService;
+import org.barmejha.services._interface.IEntityService;
 import org.barmejha.services.utils.ServiceUtils;
 
 import java.util.ArrayList;

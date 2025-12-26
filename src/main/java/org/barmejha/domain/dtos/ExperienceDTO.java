@@ -1,11 +1,7 @@
 package org.barmejha.domain.dtos;
 
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.barmejha.domain.dtos.utils.DTOUtils;
 import org.barmejha.domain.entities.Experience;
 import org.hibernate.validator.constraints.Range;
@@ -34,24 +30,24 @@ public class ExperienceDTO {
   @Range(min = 1, max = 5)
   private int rating;
 
-  public static ExperienceDTO fromEntity(Experience entity, String lang) {
+  public static ExperienceDTO fromEntity(Experience entity, List<String> joins, String lang) {
     if (entity == null) return null;
 
     return new ExperienceDTO(
         entity.getId(),
-        ActivityDTO.fromEntity(entity.getActivity(), lang),
-        UserDTO.fromEntity(entity.getClient(), lang),
-        DTOUtils.mapIfInitialized(entity.getMedia(), m -> MediaContentDTO.fromEntity(m, lang)),
+        ActivityDTO.fromEntity(entity.getActivity(), joins, lang),
+        UserDTO.fromEntity(entity.getClient(), joins, lang),
+        DTOUtils.mapIfInitialized(entity.getMedia(), m -> MediaContentDTO.fromEntity(m, joins, lang)),
         entity.getReview(),
         entity.getRating()
     );
   }
 
-  public static Set<ExperienceDTO> mapToSetIfInitialized(Set<Experience> entities, String lang) {
-    return DTOUtils.mapToSetIfInitialized(entities, e -> fromEntity(e, lang));
+  public static Set<ExperienceDTO> mapToSetIfInitialized(Set<Experience> entities, List<String> joins, String lang) {
+    return DTOUtils.mapToSetIfInitialized(entities, e -> fromEntity(e,  joins, lang));
   }
 
-  public static List<ExperienceDTO> mapToListIfInitialized(List<Experience> entities, String lang) {
-    return DTOUtils.mapIfInitialized(entities, e -> fromEntity(e, lang));
+  public static List<ExperienceDTO> mapToListIfInitialized(List<Experience> entities, List<String> joins, String lang) {
+    return DTOUtils.mapIfInitialized(entities, e -> fromEntity(e,  joins, lang));
   }
 }

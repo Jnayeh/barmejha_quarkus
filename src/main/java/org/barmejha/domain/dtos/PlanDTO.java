@@ -2,11 +2,7 @@ package org.barmejha.domain.dtos;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.barmejha.domain.dtos.utils.DTOUtils;
 import org.barmejha.domain.entities.Plan;
 import org.barmejha.domain.enums.PaymentType;
@@ -15,6 +11,7 @@ import org.barmejha.domain.enums.PlanType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -59,13 +56,13 @@ public class PlanDTO {
 
   private int maxParticipants;
 
-  public static PlanDTO fromEntity(Plan entity, String lang) {
+  public static PlanDTO fromEntity(Plan entity, List<String> joins, String lang) {
     if (entity == null) return null;
 
     return new PlanDTO(
         entity.getId(),
-        ScheduleDTO.fromEntity(entity.getSchedule(), lang),
-        UserDTO.fromEntity(entity.getClient(), lang),
+        ScheduleDTO.fromEntity(entity.getSchedule(), joins, lang),
+        UserDTO.fromEntity(entity.getClient(), joins, lang),
         entity.getStartTime(),
         entity.getEndTime(),
         entity.getStatus(),
@@ -74,8 +71,8 @@ public class PlanDTO {
         entity.getPaymentType(),
         entity.getTitle(),
         entity.getDescription(),
-        DTOUtils.mapToSetIfInitialized(entity.getParticipants(), p -> UserDTO.fromEntity(p, lang)),
-        DTOUtils.mapToSetIfInitialized(entity.getComments(), c -> CommentDTO.fromEntity(c, lang)),
+        DTOUtils.mapToSetIfInitialized(entity.getParticipants(), p -> UserDTO.fromEntity(p, joins, lang)),
+        DTOUtils.mapToSetIfInitialized(entity.getComments(), c -> CommentDTO.fromEntity(c, joins, lang)),
         entity.getMinParticipants(),
         entity.getMaxParticipants()
     );

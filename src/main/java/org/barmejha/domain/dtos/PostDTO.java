@@ -14,24 +14,24 @@ public record PostDTO(
     String content,
     List<CommentDTO> comments
 ) {
-  public static PostDTO fromEntity(Post entity, String lang) {
+  public static PostDTO fromEntity(Post entity, List<String> joins, String lang) {
     if (entity == null) return null;
 
     return new PostDTO(
         entity.getId(),
-        CommunityDTO.fromEntity(entity.getCommunity(), lang),
-        UserDTO.fromEntity(entity.getAuthor(), lang),
+        CommunityDTO.fromEntity(entity.getCommunity(), joins, lang),
+        UserDTO.fromEntity(entity.getAuthor(), joins, lang),
         entity.getTitle(),
         entity.getContent(),
-        DTOUtils.mapIfInitialized(entity.getComments(), c -> CommentDTO.fromEntity(c, lang))
+        DTOUtils.mapIfInitialized(entity.getComments(), c -> CommentDTO.fromEntity(c, joins, lang))
     );
   }
 
-  public static Set<PostDTO> mapToSetIfInitialized(Set<Post> entities, String lang) {
-    return DTOUtils.mapToSetIfInitialized(entities, e -> fromEntity(e, lang));
+  public static Set<PostDTO> mapToSetIfInitialized(Set<Post> entities, List<String> joins, String lang) {
+    return DTOUtils.mapToSetIfInitialized(entities, e -> fromEntity(e,  joins, lang));
   }
 
-  public static List<PostDTO> mapToListIfInitialized(List<Post> entities, String lang) {
-    return DTOUtils.mapIfInitialized(entities, e -> fromEntity(e, lang));
+  public static List<PostDTO> mapToListIfInitialized(List<Post> entities, List<String> joins, String lang) {
+    return DTOUtils.mapIfInitialized(entities, e -> fromEntity(e,  joins, lang));
   }
 }

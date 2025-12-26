@@ -12,7 +12,7 @@ public record TagDTO(
     String name,
     TagType type
 ) {
-  public static TagDTO fromEntity(Tag entity, String lang) {
+  public static TagDTO fromEntity(Tag entity, List<String> joins, String lang) {
     if (entity == null) return null;
 
     return new TagDTO(
@@ -22,11 +22,11 @@ public record TagDTO(
     );
   }
 
-  public static Set<TagDTO> mapToSetIfInitialized(Set<Tag> entities, String lang) {
-    return DTOUtils.mapToSetIfInitialized(entities, e -> fromEntity(e, lang));
+  public static Set<TagDTO> mapToSetIfInitialized(Set<Tag> entities, List<String> joins, String lang) {
+    return DTOUtils.mapToSetIfInitialized(entities, e -> fromEntity(e,  joins, lang));
   }
 
-  public static List<TagDTO> mapToListIfInitialized(List<Tag> entities, String lang) {
-    return DTOUtils.mapIfInitialized(entities, e -> fromEntity(e, lang));
+  public static List<TagDTO> mapToListIfInitialized(List<Tag> entities, List<String> joins, String lang) {
+    return DTOUtils.mapIfInitialized(entities, e -> fromEntity(e,  joins, lang));
   }
 }

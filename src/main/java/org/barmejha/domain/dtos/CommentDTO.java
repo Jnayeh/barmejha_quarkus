@@ -13,27 +13,27 @@ public record CommentDTO(
     UserDTO author,
     String content
 ) {
-  public static CommentDTO fromEntity(Comment entity, String lang) {
+  public static CommentDTO fromEntity(Comment entity, List<String> joins, String lang) {
     if (entity == null) return null;
 
     return new CommentDTO(
         entity.getId(),
-        PostDTO.fromEntity(entity.getPost(), lang),
-        PlanDTO.fromEntity(entity.getPlan(), lang),
-        UserDTO.fromEntity(entity.getAuthor(), lang),
+        PostDTO.fromEntity(entity.getPost(), joins, lang),
+        PlanDTO.fromEntity(entity.getPlan(), joins, lang),
+        UserDTO.fromEntity(entity.getAuthor(), joins, lang),
         entity.getContent()
     );
   }
 
-  public static Set<CommentDTO> mapToSetIfInitialized(Set<Comment> entities, String lang) {
+  public static Set<CommentDTO> mapToSetIfInitialized(Set<Comment> entities, List<String> joins, String lang) {
     return entities == null ? Set.of() : entities.stream()
-        .map(e -> fromEntity(e, lang))
+        .map(e -> fromEntity(e,  joins, lang))
         .collect(Collectors.toSet());
   }
 
-  public static List<CommentDTO> mapToListIfInitialized(List<Comment> entities, String lang) {
+  public static List<CommentDTO> mapToListIfInitialized(List<Comment> entities, List<String> joins, String lang) {
     return entities == null ? List.of() : entities.stream()
-        .map(e -> fromEntity(e, lang))
+        .map(e -> fromEntity(e,  joins, lang))
         .toList();
   }
 }

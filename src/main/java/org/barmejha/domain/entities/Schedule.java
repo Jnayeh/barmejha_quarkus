@@ -1,22 +1,9 @@
 package org.barmejha.domain.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.barmejha.domain.entities.audit.AuditedEntity;
 import org.barmejha.domain.entities.schedule.DaysOfWeekConverter;
 import org.barmejha.domain.entities.schedule.LocalDateConverter;
@@ -44,6 +31,7 @@ public class Schedule extends AuditedEntity {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "activity_id", nullable = false)
+  @JsonBackReference
   private Activity activity;
 
   @Column(nullable = false, name = "start_date")

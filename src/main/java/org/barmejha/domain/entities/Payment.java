@@ -1,21 +1,10 @@
 package org.barmejha.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.barmejha.domain.enums.PaymentStatus;
 import org.barmejha.domain.id.ULID;
 
@@ -38,6 +27,7 @@ public class Payment extends PanacheEntityBase {
 
   @OneToOne
   @JoinColumn(name = "plan_id")
+  @JsonBackReference
   private Plan plan;
 
   @Column(nullable = false)

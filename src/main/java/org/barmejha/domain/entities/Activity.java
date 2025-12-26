@@ -1,25 +1,11 @@
 package org.barmejha.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.barmejha.domain.entities.audit.AuditedEntity;
 import org.barmejha.domain.entities.media.MediaContent;
 import org.barmejha.domain.entities.users.Provider;
@@ -65,6 +51,7 @@ public class Activity extends AuditedEntity {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "provider_id")
+  @JsonBackReference
   private Provider provider;
 
   @ManyToMany
@@ -72,18 +59,20 @@ public class Activity extends AuditedEntity {
   private Set<Tag> tags;
 
   @OneToMany(mappedBy = "activity")
-  @JsonIgnoreProperties("activity")
+  @JsonManagedReference
   private List<Schedule> schedules;
 
   @OneToMany(mappedBy = "activity")
-  @JsonIgnoreProperties("activity")
+  @JsonManagedReference
   private List<Experience> experiences;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "location_id")
+  @JsonBackReference
   private Location location;
 
   @ManyToMany
   @JoinTable(name = "activity_categories")
+  @JsonManagedReference
   private Set<Category> categories;
 }

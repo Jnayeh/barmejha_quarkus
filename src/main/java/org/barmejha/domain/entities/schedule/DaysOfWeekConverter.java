@@ -29,7 +29,7 @@ public class DaysOfWeekConverter implements AttributeConverter<Set<DayOfWeek>, S
       });
     } catch (JsonProcessingException e) {
       Log.error("Error processing days of the week json", e);
-      return null;
+      return Set.of();
     }
   }
 }

@@ -1,20 +1,9 @@
 package org.barmejha.domain.entities.communities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.barmejha.domain.entities.Plan;
 import org.barmejha.domain.entities.audit.AuditedEntity;
 import org.barmejha.domain.entities.users.User;
@@ -35,14 +24,17 @@ public class Comment extends AuditedEntity {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "post_id")
+  @JsonBackReference
   private Post post;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "plan_id")
+  @JsonBackReference
   private Plan plan;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "author_id", nullable = false)
+  @JsonBackReference
   private User author;
 
   @Column(columnDefinition = "TEXT")

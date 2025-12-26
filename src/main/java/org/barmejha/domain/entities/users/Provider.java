@@ -1,15 +1,12 @@
 package org.barmejha.domain.entities.users;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.barmejha.domain.entities.Activity;
 
 import java.util.List;
@@ -33,5 +30,6 @@ public class Provider extends User {
 
   @OneToMany(mappedBy = "provider")
   @JsonIgnoreProperties("provider")
+  @JsonManagedReference
   private List<Activity> activities;
 }

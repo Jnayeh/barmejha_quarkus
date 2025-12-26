@@ -29,7 +29,7 @@ public class LocalDateConverter implements AttributeConverter<Set<LocalDate>, St
       });
     } catch (JsonProcessingException e) {
       Log.error("Error processing the date json", e);
-      return null;
+      return Set.of();
     }
   }
 }

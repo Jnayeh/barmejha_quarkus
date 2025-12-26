@@ -1,5 +1,6 @@
 package org.barmejha.domain.dtos;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Email;
 import org.barmejha.domain.dtos.utils.DTOUtils;
 import org.barmejha.domain.entities.users.Admin;
@@ -11,6 +12,7 @@ import org.barmejha.domain.enums.UserType;
 import java.util.List;
 import java.util.Set;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record UserDTO(
     Long id,
     @Email String email,
@@ -24,7 +26,7 @@ public record UserDTO(
     String logo,
     List<ActivityDTO> activities
 ) {
-  public static UserDTO fromEntity(User entity, String lang) {
+  public static UserDTO fromEntity(User entity, List<String> joins, String lang) {
     if (entity == null) return null;
     switch (entity.getType()) {
       case CLIENT -> {
@@ -40,12 +42,12 @@ public record UserDTO(
     return null;
   }
 
-  public static Set<UserDTO> mapToSetIfInitialized(Set<User> entities, String lang) {
-    return DTOUtils.mapToSetIfInitialized(entities, e -> fromEntity(e, lang));
+  public static Set<UserDTO> mapToSetIfInitialized(Set<User> entities, List<String> joins, String lang) {
+    return DTOUtils.mapToSetIfInitialized(entities, e -> fromEntity(e,  joins, lang));
   }
 
-  public static List<UserDTO> mapToListIfInitialized(List<User> entities, String lang) {
-    return DTOUtils.mapIfInitialized(entities, e -> fromEntity(e, lang));
+  public static List<UserDTO> mapToListIfInitialized(List<User> entities, List<String> joins, String lang) {
+    return DTOUtils.mapIfInitialized(entities, e -> fromEntity(e,  joins, lang));
   }
 
   public static UserDTO fromEntities(Client client, String lang) {
@@ -73,7 +75,7 @@ public record UserDTO(
         provider.getBusinessName(),
         provider.getTaxId(),
         provider.getLogo(),
-        DTOUtils.mapIfInitialized(provider.getActivities(), a -> ActivityDTO.fromEntity(a, lang))
+        DTOUtils.mapIfInitialized(provider.getActivities(), a -> ActivityDTO.fromEntity(a, List.of(), lang))
     );
   }
 

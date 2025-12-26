@@ -10,7 +10,7 @@ public record MediaContentDTO(
     String url,
     MediaType type
 ) {
-  public static MediaContentDTO fromEntity(MediaContent entity, String lang) {
+  public static MediaContentDTO fromEntity(MediaContent entity, List<String> joins, String lang) {
     if (entity == null) return null;
 
     return new MediaContentDTO(
@@ -20,10 +20,8 @@ public record MediaContentDTO(
     );
   }
 
-  public static List<MediaContentDTO> fromEntities(List<MediaContent> entities, String lang) {
+  public static List<MediaContentDTO> fromEntities(List<MediaContent> entities, List<String> joins, String lang) {
     if (entities == null) return List.of();
-    return entities.stream()
-        .map(entity -> fromEntity(entity, lang))
-        .toList();
+    return entities.stream().map(e -> fromEntity(e, joins, lang)).toList();
   }
 }

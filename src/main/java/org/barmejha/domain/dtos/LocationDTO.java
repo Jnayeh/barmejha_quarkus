@@ -14,7 +14,7 @@ public record LocationDTO(
     Double longitude,
     List<ActivityDTO> activities
 ) {
-  public static LocationDTO fromEntity(Location entity, String lang) {
+  public static LocationDTO fromEntity(Location entity, List<String> joins, String lang) {
     if (entity == null) return null;
 
     return new LocationDTO(
@@ -23,15 +23,15 @@ public record LocationDTO(
         entity.getAddress(),
         entity.getLatitude(),
         entity.getLongitude(),
-        DTOUtils.mapIfInitialized(entity.getActivities(), a -> ActivityDTO.fromEntity(a, lang))
+        DTOUtils.mapIfInitialized(entity.getActivities(), a -> ActivityDTO.fromEntity(a, joins, lang))
     );
   }
 
-  public static Set<LocationDTO> mapToSetIfInitialized(Set<Location> entities, String lang) {
-    return DTOUtils.mapToSetIfInitialized(entities, e -> fromEntity(e, lang));
+  public static Set<LocationDTO> mapToSetIfInitialized(Set<Location> entities, List<String> joins, String lang) {
+    return DTOUtils.mapToSetIfInitialized(entities, e -> fromEntity(e,  joins, lang));
   }
 
-  public static List<LocationDTO> mapToListIfInitialized(List<Location> entities, String lang) {
-    return DTOUtils.mapIfInitialized(entities, e -> fromEntity(e, lang));
+  public static List<LocationDTO> mapToListIfInitialized(List<Location> entities, List<String> joins, String lang) {
+    return DTOUtils.mapIfInitialized(entities, e -> fromEntity(e,  joins, lang));
   }
 }

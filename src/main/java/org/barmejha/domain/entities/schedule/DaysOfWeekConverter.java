@@ -24,6 +24,7 @@ public class DaysOfWeekConverter implements AttributeConverter<Set<DayOfWeek>, S
 
   @Override
   public Set<DayOfWeek> convertToEntityAttribute(String json) {
+    if (json == null) return Set.of();
     try {
       return new ObjectMapper().readValue(json, new TypeReference<>() {
       });

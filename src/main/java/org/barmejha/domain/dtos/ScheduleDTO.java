@@ -27,7 +27,7 @@ public record ScheduleDTO(
 
     return new ScheduleDTO(
         entity.getId(),
-        ActivityDTO.fromEntity(entity.getActivity(), joins, lang),
+        joins.contains("activity") ? ActivityDTO.fromEntity(entity.getActivity(), joins, lang) : null,
         entity.getStartDate(),
         entity.getEndDate(),
         entity.getRecurrence(),

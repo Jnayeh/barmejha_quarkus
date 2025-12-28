@@ -42,7 +42,7 @@ public class UserService implements IEntityService<User, UserDTO> {
   @WithSession
   public Uni<List<UserDTO>> query(HttpHeaders headers, QueryRequest queryRequest) {
     queryRequest.setJoins(new ArrayList<>(initJoins(queryRequest)));
-    return userRepository.findByQuery(queryRequest).map(this::toDTO);
+    return userRepository.findByQuery(queryRequest).map(entityList -> toDTO(entityList, queryRequest.getJoins()));
   }
 
   @Override
@@ -110,8 +110,13 @@ public class UserService implements IEntityService<User, UserDTO> {
 
   @Override
   public UserDTO toDTO(User entity) {
+      return toDTO(entity, List.of());
+  }
+
+  @Override
+  public UserDTO toDTO(User entity, List<String> joins) {
     if (entity == null) return null;
-    return UserDTO.fromEntity(entity, headerHolder.getLang());
+    return UserDTO.fromEntity(entity, joins, headerHolder.getLang());
   }
 
     public Set<String> initJoins(QueryRequest queryRequest) {

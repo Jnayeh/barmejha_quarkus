@@ -37,7 +37,7 @@ public class CategoryService implements IEntityService<Category, CategoryDTO> {
   @WithSession
   public Uni<List<CategoryDTO>> query(HttpHeaders headers, QueryRequest queryRequest) {
     queryRequest.setJoins(new ArrayList<>(initJoins(queryRequest)));
-    return categoryRepository.findByQuery(queryRequest).map(this::toDTO);
+    return categoryRepository.findByQuery(queryRequest).map(entityList -> toDTO(entityList, queryRequest.getJoins()));
   }
 
   @Override
@@ -79,11 +79,16 @@ public class CategoryService implements IEntityService<Category, CategoryDTO> {
 
   @Override
   public CategoryDTO toDTO(Category entity) {
-    if (entity == null) return null;
-    return CategoryDTO.fromEntity(entity, headerHolder.getLang());
+    return toDTO(entity, List.of());
   }
 
-    public Set<String> initJoins(QueryRequest queryRequest) {
+  @Override
+  public CategoryDTO toDTO(Category entity, List<String> joins) {
+    if (entity == null) return null;
+    return CategoryDTO.fromEntity(entity, joins, headerHolder.getLang());
+  }
+
+  public Set<String> initJoins(QueryRequest queryRequest) {
     HashSet<String> joins = new HashSet<>(Set.of("media"));
     if (queryRequest.getJoins() == null) {
       return joins;

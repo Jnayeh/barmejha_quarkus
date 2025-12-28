@@ -38,7 +38,7 @@ public class PlanService implements IEntityService<Plan, PlanDTO> {
   @WithSession
   public Uni<List<PlanDTO>> query(HttpHeaders headers, QueryRequest queryRequest) {
     queryRequest.setJoins(new ArrayList<>(initJoins(queryRequest)));
-    return planRepository.findByQuery(queryRequest).map(this::toDTO);
+    return planRepository.findByQuery(queryRequest).map(entityList -> toDTO(entityList, queryRequest.getJoins()));
   }
 
   @Override
@@ -89,11 +89,16 @@ public class PlanService implements IEntityService<Plan, PlanDTO> {
 
   @Override
   public PlanDTO toDTO(Plan entity) {
-    if (entity == null) return null;
-    return PlanDTO.fromEntity(entity, headerHolder.getLang());
+      return toDTO(entity, List.of());
   }
 
-    public Set<String> initJoins(QueryRequest queryRequest) {
+  @Override
+  public PlanDTO toDTO(Plan entity, List<String> joins) {
+      if (entity == null) return null;
+      return PlanDTO.fromEntity(entity, joins, headerHolder.getLang());
+  }
+
+  public Set<String> initJoins(QueryRequest queryRequest) {
     HashSet<String> joins = new HashSet<>(Set.of("schedule", "client"));
     if (queryRequest.getJoins() == null) {
       return joins;

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.barmejha.config.utils.HeaderHolder;
 import org.barmejha.domain.dtos.UserDTO;
+import org.barmejha.domain.entities.users.Client;
 import org.barmejha.domain.entities.users.Provider;
 import org.barmejha.domain.entities.users.User;
 import org.barmejha.domain.request.QueryRequest;
@@ -40,7 +41,7 @@ public class ProviderService implements IEntityService<Provider, UserDTO> {
   @WithSession
   public Uni<List<UserDTO>> query(HttpHeaders headers, QueryRequest queryRequest) {
     queryRequest.setJoins(new ArrayList<>(initJoins(queryRequest)));
-    return providerRepository.findByQuery(queryRequest).map(this::toDTO);
+    return providerRepository.findByQuery(queryRequest).map(entityList -> toDTO(entityList, queryRequest.getJoins()));
   }
 
 
@@ -95,13 +96,13 @@ public class ProviderService implements IEntityService<Provider, UserDTO> {
 
   @Override
   public UserDTO toDTO(Provider entity) {
-    if (entity == null) return null;
-    return UserDTO.fromEntity(entity, headerHolder.getLang());
+    return toDTO(entity, List.of());
   }
 
-  public UserDTO toDTO(User entity) {
+  @Override
+  public UserDTO toDTO(Provider entity, List<String> joins) {
     if (entity == null) return null;
-    return UserDTO.fromEntity(entity, headerHolder.getLang());
+    return UserDTO.fromEntity(entity, joins, headerHolder.getLang());
   }
 
     public Set<String> initJoins(QueryRequest queryRequest) {

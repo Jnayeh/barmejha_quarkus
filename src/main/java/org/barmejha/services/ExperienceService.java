@@ -37,7 +37,7 @@ public class ExperienceService implements IEntityService<Experience, ExperienceD
   @WithSession
   public Uni<List<ExperienceDTO>> query(HttpHeaders headers, QueryRequest queryRequest) {
     queryRequest.setJoins(new ArrayList<>(initJoins(queryRequest)));
-    return experienceRepository.findByQuery(queryRequest).map(this::toDTO);
+    return experienceRepository.findByQuery(queryRequest).map(entityList -> toDTO(entityList, queryRequest.getJoins()));
   }
 
   @Override
@@ -49,7 +49,7 @@ public class ExperienceService implements IEntityService<Experience, ExperienceD
   @Override
   @WithTransaction
   public Uni<Response> create(HttpHeaders headers, Experience entity) {
-    return experienceRepository.persist(entity).map(ServiceUtils::createdResponse);
+    return experienceRepository.persist(entity).map(this::toDTO).map(ServiceUtils::createdResponse);
   }
 
   @Override
@@ -80,16 +80,12 @@ public class ExperienceService implements IEntityService<Experience, ExperienceD
 
   @Override
   public ExperienceDTO toDTO(Experience entity) {
-    if (entity == null) return null;
-    return ExperienceDTO.fromEntity(entity, headerHolder.getLang());
+      return toDTO(entity, List.of());
   }
 
-    public Set<String> initJoins(QueryRequest queryRequest) {
-    HashSet<String> joins = new HashSet<>(Set.of("activity", "client"));
-    if (queryRequest.getJoins() == null) {
-      return joins;
-    }
-    joins.addAll(queryRequest.getJoins());
-    return joins;
+  @Override
+  public ExperienceDTO toDTO(Experience entity, List<String> joins) {
+      if (entity == null) return null;
+      return ExperienceDTO.fromEntity(entity, joins, headerHolder.getLang());
   }
 }

@@ -28,7 +28,7 @@ public class ScheduleService implements IEntityService<Schedule, ScheduleDTO> {
   private final HeaderHolder headerHolder;
 
   public Uni<List<ScheduleDTO>> getAllSchedulesByActivity(Long id) {
-    return scheduleRepository.findByActivityId(id).map(this::toDTO);
+    return scheduleRepository.findByActivityId(id).map(entityList -> toDTO(entityList, List.of()));
   }
 
   @Override
@@ -41,7 +41,7 @@ public class ScheduleService implements IEntityService<Schedule, ScheduleDTO> {
   @WithSession
   public Uni<List<ScheduleDTO>> query(HttpHeaders headers, QueryRequest queryRequest) {
     queryRequest.setJoins(new ArrayList<>(initJoins(queryRequest)));
-    return scheduleRepository.findByQuery(queryRequest).map(this::toDTO);
+    return scheduleRepository.findByQuery(queryRequest).map(entityList -> toDTO(entityList, queryRequest.getJoins()));
   }
 
   @Override
@@ -89,11 +89,16 @@ public class ScheduleService implements IEntityService<Schedule, ScheduleDTO> {
 
   @Override
   public ScheduleDTO toDTO(Schedule entity) {
-    if (entity == null) return null;
-    return ScheduleDTO.fromEntity(entity, headerHolder.getLang());
+      return toDTO(entity, List.of());
   }
 
-    public Set<String> initJoins(QueryRequest queryRequest) {
+  @Override
+  public ScheduleDTO toDTO(Schedule entity, List<String> joins) {
+      if (entity == null) return null;
+      return ScheduleDTO.fromEntity(entity, joins, headerHolder.getLang());
+  }
+
+  public Set<String> initJoins(QueryRequest queryRequest) {
     HashSet<String> joins = new HashSet<>(Set.of("activity"));
     if (queryRequest.getJoins() == null) {
       return joins;

@@ -18,8 +18,8 @@ public record CommentDTO(
 
     return new CommentDTO(
         entity.getId(),
-        PostDTO.fromEntity(entity.getPost(), joins, lang),
-        PlanDTO.fromEntity(entity.getPlan(), joins, lang),
+        joins.contains("post") ? PostDTO.fromEntity(entity.getPost(), joins, lang): null,
+        joins.contains("plan") ? PlanDTO.fromEntity(entity.getPlan(), joins, lang): null,
         UserDTO.fromEntity(entity.getAuthor(), joins, lang),
         entity.getContent()
     );

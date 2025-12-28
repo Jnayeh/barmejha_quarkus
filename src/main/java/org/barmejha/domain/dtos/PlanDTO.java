@@ -2,7 +2,7 @@ package org.barmejha.domain.dtos;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import lombok.*;
+import jakarta.validation.constraints.NotNull;
 import org.barmejha.domain.dtos.utils.DTOUtils;
 import org.barmejha.domain.entities.Plan;
 import org.barmejha.domain.enums.PaymentType;
@@ -14,47 +14,38 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 @Valid
-public class PlanDTO {
+public record PlanDTO(
+    Long id,
+    ScheduleDTO schedule,
+    UserDTO client,
+    LocalDateTime startTime,
+    LocalDateTime endTime,
+    PlanStatus status,
+    BigDecimal finalPrice,
 
-  private Long id;
+    @NotNull PlanType type,
+    @NotNull PaymentType paymentType,
+    String title,
+    String description,
+    Set<UserDTO> participants,
+    Set<CommentDTO> comments,
+    @Min(1) Integer minParticipants,
+    int maxParticipants
+) {
 
-  private ScheduleDTO schedule;
-
-  private UserDTO client;
-
-  private LocalDateTime startTime;
-
-  private LocalDateTime endTime;
-
-  private PlanStatus status;
-
-  private BigDecimal finalPrice;
-
-  @Builder.Default
-  private PlanType type = PlanType.PRIVATE;
-
-  @Builder.Default
-  private PaymentType paymentType = PaymentType.CREATOR;
-
-  private String title;
-
-  private String description;
-
-  private Set<UserDTO> participants;
-
-  private Set<CommentDTO> comments;
-
-  @Min(1)
-  @Builder.Default
-  private int minParticipants = 1;
-
-  private int maxParticipants;
+  public PlanDTO {
+    // Compact constructor for validation and defaults
+    if (minParticipants == null) {
+      minParticipants = 1;
+    }
+    if (type == null) {
+      type = PlanType.PRIVATE;
+    }
+    if (paymentType == null) {
+      paymentType = PaymentType.CREATOR;
+    }
+  }
 
   public static PlanDTO fromEntity(Plan entity, List<String> joins, String lang) {
     if (entity == null) return null;
@@ -63,14 +54,12 @@ public class PlanDTO {
         entity.getId(),
         ScheduleDTO.fromEntity(entity.getSchedule(), joins, lang),
         UserDTO.fromEntity(entity.getClient(), joins, lang),
-        entity.getStartTime(),
-        entity.getEndTime(),
+        entity.getStartTime(), entity.getEndTime(),
         entity.getStatus(),
         entity.getFinalPrice(),
         entity.getType(),
         entity.getPaymentType(),
-        entity.getTitle(),
-        entity.getDescription(),
+        entity.getTitle(), entity.getDescription(),
         DTOUtils.mapToSetIfInitialized(entity.getParticipants(), p -> UserDTO.fromEntity(p, joins, lang)),
         DTOUtils.mapToSetIfInitialized(entity.getComments(), c -> CommentDTO.fromEntity(c, joins, lang)),
         entity.getMinParticipants(),

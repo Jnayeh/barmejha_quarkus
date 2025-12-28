@@ -35,7 +35,7 @@ public class ExperienceDTO {
 
     return new ExperienceDTO(
         entity.getId(),
-        ActivityDTO.fromEntity(entity.getActivity(), joins, lang),
+        joins.contains("activity") ? ActivityDTO.fromEntity(entity.getActivity(), joins, lang): null,
         UserDTO.fromEntity(entity.getClient(), joins, lang),
         DTOUtils.mapIfInitialized(entity.getMedia(), m -> MediaContentDTO.fromEntity(m, joins, lang)),
         entity.getReview(),

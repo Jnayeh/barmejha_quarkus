@@ -19,7 +19,7 @@ public record PostDTO(
 
     return new PostDTO(
         entity.getId(),
-        CommunityDTO.fromEntity(entity.getCommunity(), joins, lang),
+        joins.contains("community") ? CommunityDTO.fromEntity(entity.getCommunity(), joins, lang): null,
         UserDTO.fromEntity(entity.getAuthor(), joins, lang),
         entity.getTitle(),
         entity.getContent(),

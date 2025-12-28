@@ -29,13 +29,13 @@ public class LocationService implements IEntityService<Location, LocationDTO> {
   @Override
   @WithSession
   public Uni<List<LocationDTO>> getAll(HttpHeaders headers) {
-    return locationRepository.findAll().list().map(this::toDTO);
+      return query(headers, QueryRequest.builder().build());
   }
 
   @Override
   @WithSession
   public Uni<List<LocationDTO>> query(HttpHeaders headers, QueryRequest queryRequest) {
-    return locationRepository.findByQuery(queryRequest).map(this::toDTO);
+    return locationRepository.findByQuery(queryRequest).map(entityList -> toDTO(entityList, queryRequest.getJoins()));
   }
 
   @Override
@@ -73,8 +73,13 @@ public class LocationService implements IEntityService<Location, LocationDTO> {
 
   @Override
   public LocationDTO toDTO(Location entity) {
-    if (entity == null) return null;
-    return LocationDTO.fromEntity(entity, headerHolder.getLang());
+      return toDTO(entity, List.of());
+  }
+
+  @Override
+  public LocationDTO toDTO(Location entity, List<String> joins) {
+      if (entity == null) return null;
+      return LocationDTO.fromEntity(entity, joins, headerHolder.getLang());
   }
 
   @Override
@@ -83,12 +88,4 @@ public class LocationService implements IEntityService<Location, LocationDTO> {
     return locationRepository.countByQuery(request);
   }
 
-  public Set<String> initJoins(QueryRequest queryRequest) {
-    HashSet<String> joins = new HashSet<>(Set.of());
-    if (queryRequest.getJoins() == null) {
-      return joins;
-    }
-    joins.addAll(queryRequest.getJoins());
-    return joins;
-  }
 }

@@ -40,7 +40,7 @@ public class AdminService implements IEntityService<Admin, UserDTO> {
   @WithSession
   public Uni<List<UserDTO>> query(HttpHeaders headers, QueryRequest queryRequest) {
     queryRequest.setJoins(new ArrayList<>(initJoins(queryRequest)));
-    return adminRepository.findByQuery(queryRequest).map(this::toDTO);
+    return adminRepository.findByQuery(queryRequest).map(entityList -> toDTO(entityList, queryRequest.getJoins()));
   }
 
 
@@ -95,14 +95,14 @@ public class AdminService implements IEntityService<Admin, UserDTO> {
 
   @Override
   public UserDTO toDTO(Admin entity) {
-    if (entity == null) return null;
-    return UserDTO.fromEntity(entity, headerHolder.getLang());
+    return toDTO(entity, List.of());
   }
 
-  public UserDTO toDTO(User entity) {
-    if (entity == null) return null;
-    return UserDTO.fromEntity(entity, headerHolder.getLang());
-  }
+    @Override
+    public UserDTO toDTO(Admin entity, List<String> joins) {
+        if (entity == null) return null;
+        return UserDTO.fromEntity(entity, joins, headerHolder.getLang());
+    }
 
     public Set<String> initJoins(QueryRequest queryRequest) {
     HashSet<String> joins = new HashSet<>(Set.of());

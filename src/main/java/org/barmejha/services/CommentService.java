@@ -37,7 +37,7 @@ public class CommentService implements IEntityService<Comment, CommentDTO> {
   @WithSession
   public Uni<List<CommentDTO>> query(HttpHeaders headers, QueryRequest queryRequest) {
     queryRequest.setJoins(new ArrayList<>(initJoins(queryRequest)));
-    return commentRepository.findByQuery(queryRequest).map(this::toDTO);
+    return commentRepository.findByQuery(queryRequest).map(entityList -> toDTO(entityList, queryRequest.getJoins()));
   }
 
   @Override
@@ -78,12 +78,17 @@ public class CommentService implements IEntityService<Comment, CommentDTO> {
 
   @Override
   public CommentDTO toDTO(Comment entity) {
-    if (entity == null) return null;
-    return CommentDTO.fromEntity(entity, headerHolder.getLang());
+      return toDTO(entity, List.of());
+  }
+
+  @Override
+  public CommentDTO toDTO(Comment entity, List<String> joins) {
+      if (entity == null) return null;
+      return CommentDTO.fromEntity(entity, joins, headerHolder.getLang());
   }
 
     public Set<String> initJoins(QueryRequest queryRequest) {
-    HashSet<String> joins = new HashSet<>(Set.of("post", "plan", "author"));
+    HashSet<String> joins = new HashSet<>(Set.of("author"));
     if (queryRequest.getJoins() == null) {
       return joins;
     }

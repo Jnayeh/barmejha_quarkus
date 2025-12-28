@@ -37,7 +37,7 @@ public class PostService implements IEntityService<Post, PostDTO> {
   @WithSession
   public Uni<List<PostDTO>> query(HttpHeaders headers, QueryRequest queryRequest) {
     queryRequest.setJoins(new ArrayList<>(initJoins(queryRequest)));
-    return postRepository.findByQuery(queryRequest).map(this::toDTO);
+    return postRepository.findByQuery(queryRequest).map(entityList -> toDTO(entityList, queryRequest.getJoins()));
   }
 
   @Override
@@ -79,11 +79,16 @@ public class PostService implements IEntityService<Post, PostDTO> {
 
   @Override
   public PostDTO toDTO(Post entity) {
-    if (entity == null) return null;
-    return PostDTO.fromEntity(entity, headerHolder.getLang());
+      return toDTO(entity, List.of());
   }
 
-    public Set<String> initJoins(QueryRequest queryRequest) {
+  @Override
+  public PostDTO toDTO(Post entity, List<String> joins) {
+      if (entity == null) return null;
+      return PostDTO.fromEntity(entity, joins, headerHolder.getLang());
+  }
+
+  public Set<String> initJoins(QueryRequest queryRequest) {
     HashSet<String> joins = new HashSet<>(Set.of("community", "author"));
     if (queryRequest.getJoins() == null) {
       return joins;

@@ -6,7 +6,9 @@ import jakarta.ws.rs.core.Response;
 import org.barmejha.domain.request.QueryRequest;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public interface IEntityService<E, D> {
 
@@ -26,9 +28,18 @@ public interface IEntityService<E, D> {
   Uni<Long> count(HttpHeaders headers, QueryRequest request);
 
   D toDTO(E entity);
+  D toDTO(E entity, List<String> joins);
 
-  default List<D> toDTO(List<E> entityList) {
+  default List<D> toDTO(List<E> entityList, List<String> joins) {
     if (entityList == null) return new ArrayList<>();
-    return entityList.stream().map(this::toDTO).toList();
+    return entityList.stream().map(e -> toDTO(e, joins)).toList();
+  }
+  default Set<String> initJoins(QueryRequest queryRequest) {
+    HashSet<String> joins = new HashSet<>(Set.of());
+    if (queryRequest.getJoins() == null) {
+      return joins;
+    }
+    joins.addAll(queryRequest.getJoins());
+    return joins;
   }
 }

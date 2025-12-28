@@ -44,7 +44,7 @@ public class ActivityService implements IEntityService<Activity, ActivityDTO> {
   @WithSession
   public Uni<List<ActivityDTO>> query(HttpHeaders headers, QueryRequest queryRequest) {
     queryRequest.setJoins(new ArrayList<>(initJoins(queryRequest)));
-    return activityRepository.findByQuery(queryRequest).map(this::toDTO);
+    return activityRepository.findByQuery(queryRequest).map(entityList -> toDTO(entityList, queryRequest.getJoins()));
   }
 
   @Override
@@ -57,7 +57,7 @@ public class ActivityService implements IEntityService<Activity, ActivityDTO> {
   @WithTransaction
   public Uni<Response> create(HttpHeaders headers, Activity activity) {
     return activityRepository.persist(activity)
-        .onItem().transform(ServiceUtils::createdResponse)
+        .map(this::toDTO).map(ServiceUtils::createdResponse)
         .onFailure().transform(throwable -> {
           log.error("Error creating activity: {}", throwable.getMessage(), throwable);
           throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ErrorBody.builder().message(throwable.getMessage()).build()).build());
@@ -94,9 +94,13 @@ public class ActivityService implements IEntityService<Activity, ActivityDTO> {
 
   @Override
   public ActivityDTO toDTO(Activity entity) {
-    if (entity == null) return null;
-    return ActivityDTO.fromEntity(entity, headerHolder.getLang());
+    return toDTO(entity, List.of());
   }
+
+    @Override
+    public ActivityDTO toDTO(Activity entity, List<String> joins) {
+      return ActivityDTO.fromEntity(entity, joins, headerHolder.getLang());
+    }
 
   @Override
   @WithSession
@@ -104,13 +108,4 @@ public class ActivityService implements IEntityService<Activity, ActivityDTO> {
     return activityRepository.countByQuery(request);
   }
 
-
-  public Set<String> initJoins(QueryRequest queryRequest) {
-    HashSet<String> joins = new HashSet<>(Set.of("location", "provider"));
-    if (queryRequest.getJoins() == null) {
-      return joins;
-    }
-    joins.addAll(queryRequest.getJoins());
-    return joins;
-  }
 }

@@ -1,6 +1,7 @@
 package org.barmejha.config;
 
 public class Constants {
+  private Constants () {}
   public static final String X_LANG = "x-lang";
   public static final String X_MSISDN = "x-msisdn";
   public static final String X_USER = "x-user";

@@ -52,7 +52,7 @@ public record PlanDTO(
 
     return new PlanDTO(
         entity.getId(),
-        ScheduleDTO.fromEntity(entity.getSchedule(), joins, lang),
+        joins.contains("schedule") ? ScheduleDTO.fromEntity(entity.getSchedule(), joins, lang) : null,
         UserDTO.fromEntity(entity.getClient(), joins, lang),
         entity.getStartTime(), entity.getEndTime(),
         entity.getStatus(),

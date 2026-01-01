@@ -13,6 +13,6 @@ public class ProviderRepository extends GenericRepository<Provider> {
 
   @Override
   protected String getEntityName() {
-    return "users e";
+    return "Provider e";
   }
 }

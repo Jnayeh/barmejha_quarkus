@@ -13,6 +13,6 @@ public class CategoryRepository extends GenericRepository<Category> {
 
   @Override
   protected String getEntityName() {
-    return "categories e";
+    return "Category e";
   }
 }

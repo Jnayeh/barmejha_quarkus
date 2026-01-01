@@ -13,6 +13,6 @@ public class AdminRepository extends GenericRepository<Admin> {
 
   @Override
   protected String getEntityName() {
-    return "users e";
+    return "Admin e";
   }
 }

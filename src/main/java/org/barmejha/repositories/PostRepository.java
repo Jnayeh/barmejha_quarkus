@@ -8,6 +8,6 @@ import org.barmejha.repositories.generic.GenericRepository;
 public class PostRepository extends GenericRepository<Post> {
   @Override
   protected String getEntityName() {
-    return "posts e";
+    return "Post e";
   }
 }

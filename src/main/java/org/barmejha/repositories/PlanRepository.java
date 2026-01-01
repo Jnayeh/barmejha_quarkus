@@ -8,6 +8,6 @@ import org.barmejha.repositories.generic.GenericRepository;
 public class PlanRepository extends GenericRepository<Plan> {
   @Override
   protected String getEntityName() {
-    return "plans e";
+    return "Plan e";
   }
 }

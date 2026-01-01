@@ -88,4 +88,14 @@ public class ExperienceService implements IEntityService<Experience, ExperienceD
       if (entity == null) return null;
       return ExperienceDTO.fromEntity(entity, joins, headerHolder.getLang());
   }
+
+  @Override
+  public Set<String> initJoins(QueryRequest queryRequest) {
+    HashSet<String> joins = new HashSet<>(Set.of("client"));
+    if (queryRequest.getJoins() == null) {
+      return joins;
+    }
+    joins.addAll(queryRequest.getJoins());
+    return joins;
+  }
 }

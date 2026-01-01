@@ -8,6 +8,6 @@ import org.barmejha.repositories.generic.GenericRepository;
 public class CommentRepository extends GenericRepository<Comment> {
   @Override
   protected String getEntityName() {
-    return "comments e";
+    return "Comment e";
   }
 }

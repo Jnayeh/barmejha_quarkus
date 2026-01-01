@@ -9,6 +9,6 @@ public class LocationRepository extends GenericRepository<Location> {
 
   @Override
   protected String getEntityName() {
-    return "locations e";
+    return "Location e";
   }
 }

@@ -5,7 +5,7 @@ import java.security.SecureRandom;
 import java.time.Instant;
 
 public class Generator {
-
+  private Generator() {}
   // New alphabet with 26 characters
   private static final char[] ENCODING_CHARS = "0123456789ACEFGHJMPRSTVXYZ".toCharArray();
   private static final SecureRandom RANDOM = new SecureRandom();

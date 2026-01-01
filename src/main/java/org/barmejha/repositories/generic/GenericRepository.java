@@ -5,11 +5,7 @@ import io.smallrye.mutiny.Uni;
 import lombok.extern.slf4j.Slf4j;
 import org.barmejha.domain.request.QueryRequest;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -26,7 +22,20 @@ public abstract class GenericRepository<T> implements PanacheRepository<T> {
       var pagination = queryRequest.getPagination();
       return query.page(pagination.getPage(), pagination.getSize()).list();
     }
+    dangerouslyChangeJoins(queryRequest);
     return query.list();
+  }
+
+  private void dangerouslyChangeJoins(QueryRequest queryRequest) {
+    if (queryRequest.getJoins() == null) return;
+    queryRequest.setOldJoins(queryRequest.getJoins());
+    var mapped = queryRequest.getJoins().stream().map(j -> {
+      String safeJoin = j.trim();
+      if (safeJoin.contains(" ")) safeJoin = safeJoin.split("\\s+")[0];
+      if (safeJoin.contains(".")) safeJoin = safeJoin.split("\\.")[1];
+      return safeJoin;
+    }).toList();
+    queryRequest.setJoins(mapped);
   }
 
   public Uni<Long> countByQuery(QueryRequest queryRequest) {
@@ -40,9 +49,13 @@ public abstract class GenericRepository<T> implements PanacheRepository<T> {
     var whereClauses = new ArrayList<String>();
 
     // Process fetch joins
-    for (var joinPath : queryRequest.getJoins()) {
-      queryBuilder.append(" ").append(buildFetchJoinQuery(joinPath));
-    }
+    Optional.ofNullable(queryRequest.getJoins()).orElse(List.of())
+        .stream().sorted((j1, j2) -> {
+          if(j1.contains(".")) return 1;
+          if(j2.contains(".")) return -1;
+          return 0;
+        })
+        .forEachOrdered(joinPath-> queryBuilder.append(" ").append(buildFetchJoinQuery(joinPath)));
 
     // Process filters
     for (var filter : queryRequest.getFilters()) {
@@ -69,8 +82,13 @@ public abstract class GenericRepository<T> implements PanacheRepository<T> {
 
   protected String buildFetchJoinQuery(String... joinPaths) {
     return Arrays.stream(joinPaths)
-        .map(path -> "LEFT JOIN FETCH e." + path)
+        .map(GenericRepository::joinFetch)
         .collect(Collectors.joining(" "));
+  }
+
+  private static String joinFetch(String path) {
+    if (!path.contains(".")) { path = "e." + path; }
+    return "LEFT JOIN FETCH " + path;
   }
 
   private String buildWhereClause(QueryRequest.FilterCriteria filter, Map<String, Object> params) {

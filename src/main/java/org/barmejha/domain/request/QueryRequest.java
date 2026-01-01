@@ -1,16 +1,12 @@
 package org.barmejha.domain.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Value;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
+import static org.barmejha.domain.request.Operator.BETWEEN;
 
 @Data
 @Builder
@@ -25,11 +21,14 @@ public class QueryRequest {
 
   @Builder.Default
   private List<String> joins = new ArrayList<>();
+  private List<String> oldJoins;
 
   private Pagination pagination;
 
-  // Fluent API methods
-  public QueryRequest addFilter(String field, Operator operator, Object value) {
+  public QueryRequest addFilter(String field, Operator operator, Object value, Object value2) {
+      if (BETWEEN.equals(operator)) {
+          return addFilter(FilterCriteria.between(field, value, value2));
+      }
     return addFilter(FilterCriteria.of(field, operator, value));
   }
 
@@ -65,14 +64,14 @@ public class QueryRequest {
     private String field;
     private Operator operator;
     private Object value;
-    private Object secondValue; // For BETWEEN operator
+    private Object secondValue;
 
     public static FilterCriteria of(String field, Operator operator, Object value) {
       return new FilterCriteria(field, operator, value, null);
     }
 
     public static FilterCriteria between(String field, Object value1, Object value2) {
-      return new FilterCriteria(field, Operator.BETWEEN, value1, value2);
+      return new FilterCriteria(field, BETWEEN, value1, value2);
     }
 
     public void validate() {

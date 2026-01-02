@@ -1,6 +1,7 @@
 package org.barmejha.domain.request;
 
 import lombok.*;
+import org.barmejha.core.utils.ListUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,6 +14,8 @@ import static org.barmejha.domain.request.Operator.BETWEEN;
 @NoArgsConstructor
 @AllArgsConstructor
 public class QueryRequest {
+  private List<String> selectedFields;
+  private List<String> excludedFields;
   @Builder.Default
   private List<FilterCriteria> filters = new ArrayList<>();
 
@@ -24,6 +27,10 @@ public class QueryRequest {
   private List<String> oldJoins;
 
   private Pagination pagination;
+
+  public boolean hasFieldSelection() {
+    return ListUtils.isNotEmpty(selectedFields) || ListUtils.isNotEmpty(excludedFields);
+  }
 
   public QueryRequest addFilter(String field, Operator operator, Object value, Object value2) {
       if (BETWEEN.equals(operator)) {
